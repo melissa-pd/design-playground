@@ -1,0 +1,11 @@
+# Skill installers sometimes leave upstream repos cloned here. They carry their
+# own .git, so committing one creates a gitlink with no .gitmodules entry and
+# anyone cloning this repo gets an empty directory. Installed skills belong in
+# .agents/skills/ (tracked) instead.
+/skills/
+/claude-marketplace/
+/bencium-claude-code-design-skill/
+/ui-ux-pro-max-skill/
+
+node_modules/
+.DS_Store

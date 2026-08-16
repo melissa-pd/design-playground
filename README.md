@@ -1,6 +1,8 @@
 # design-playground
 A sandbox for exploring product and UI design ideas, from concept work, interface explorations, component experiments, to half-formed thinking that isn't tied to a client deliverable. I use this space to brainstorm, iterate, and experiment design ideas.
 
+For the recommended Conductor workflow, initiative structure, and guidance on why this repo should use shared skills instead of Git submodules, see [Design Playground Workflow](docs/design-playground-workflow.md).
+
 ## Agent skills
 
 Seventeen skills live in `.agents/skills/`. Claude Code only discovers project skills under `.claude/skills/`, so that directory holds a symlink to each one. Both directories are committed — clone the repo and every skill works, no setup and no global install required.

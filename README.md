@@ -1,7 +1,7 @@
 # design-playground
 A sandbox for exploring product and UI design ideas, from concept work, interface explorations, component experiments, to half-formed thinking that isn't tied to a client deliverable. I use this space to brainstorm, iterate, and experiment design ideas.
 
-For the recommended Conductor workflow, initiative structure, and guidance on why this repo should use shared skills instead of Git submodules, see [Design Playground Workflow](docs/design-playground-workflow.md).
+For the recommended Cursor workflow, initiative structure, and guidance on why this repo should use shared skills instead of Git submodules, see [Design Playground Workflow](docs/design-playground-workflow.md).
 
 ## Agent skills
 

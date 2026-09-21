@@ -1,6 +1,6 @@
 # Design Playground Workflow
 
-This repo is an internal playground for exploring product, UI, and design initiatives that reuse the same agent skills. The recommended setup is one shared repository with repo-level skills, plus one Conductor workspace or branch per initiative.
+This repo is an internal playground for exploring product, UI, and design initiatives that reuse the same agent skills. The recommended setup is one shared repository with repo-level skills, plus one Cursor branch and chat per initiative.
 
 Do not use Git submodules for normal initiatives in this repo. Submodules are only worth it when an initiative must live as a separate repository with its own independent history, permissions, release lifecycle, or deployment ownership.
 
@@ -26,27 +26,23 @@ README.md
 
 Use `initiatives/<initiative-name>/` for experiments. Keep each initiative self-contained unless it intentionally shares components, assets, or research with another initiative.
 
-## Create A New Initiative In Conductor
+## Create A New Initiative In Cursor
 
-1. Open **Conductor**.
-2. In the left sidebar, select **Design Playground**.
-3. Press `Cmd + Shift + N`, or click the `...` menu next to **New workspace**.
-4. Choose a new task or workspace.
-5. Name the branch after the initiative, for example:
+1. Open **Design Playground** in Cursor.
+2. Create a branch named after the initiative, for example:
 
    ```text
-   initiative-onboarding-flow
+   cursor/onboarding-flow
    ```
 
-6. Start the workspace.
-7. Open a Codex or Claude Code chat inside that workspace.
-8. Tell the agent where the initiative should live:
+3. Start a new Cursor chat on that branch.
+4. Tell the agent where the initiative should live:
 
    ```text
    Create this initiative under initiatives/onboarding-flow. Use the shared repo skills in .agents/skills.
    ```
 
-Conductor creates a separate branch and working tree for the workspace, so the initiative can move independently without creating a separate GitHub repository.
+Use Cursor Cloud Agents when the work should run remotely or in parallel. Keep each initiative on its own branch so it has an independent diff and review path without requiring a separate GitHub repository.
 
 ## Configure Shared Project Guidance
 
@@ -76,45 +72,21 @@ initiatives/
 
 Use nested `AGENTS.md` files for local rules such as design direction, framework constraints, target audience, or testing expectations for that initiative.
 
-## Conductor Settings To Check
+## Cursor Environment Setup
 
-Use these settings only if the repo needs repeatable setup or run commands.
+Only add shared environment configuration when the repo has repeatable setup or run commands. Keep initiative-specific commands in that initiative's `README.md` or nested `AGENTS.md`.
 
-1. Open **Conductor**.
-2. Select **Design Playground** in the sidebar.
-3. Open **Settings**.
-4. Select the **Design Playground** project or repository settings.
-5. Look for **Setup script**, **Run scripts**, and **Files to copy**.
+Use `.cursor/environment.json` when Cursor Cloud Agents need predictable dependencies, services, or setup commands. Keep static ignored files such as `.env.local`, local config, or certificates out of Git and document how contributors should provide them.
 
-Use **Files to copy** for static ignored files such as `.env.local`, local config, or certificates.
-
-Use a **Setup script** for commands that prepare every new workspace, such as dependency installs or generated files.
-
-Example shared settings file:
-
-```toml
-"$schema" = "https://conductor.build/schemas/settings.repo.schema.json"
-
-[scripts]
-setup = "pnpm install"
-run_mode = "concurrent"
-
-[scripts.run.dev]
-available_in = [ "local" ]
-command = "pnpm dev --port $CONDUCTOR_PORT"
-default = true
-icon = "play"
-```
-
-Only add this file if the repo has a real setup or run command. For pure design docs, mockups, and experiments, it is fine to leave Conductor scripts empty.
+Pure design docs, mockups, and experiments do not need an environment file.
 
 ## When To Use Each Option
 
 Use a **new initiative folder** when the work is part of the shared playground and should reuse the same skills.
 
-Use a **new Conductor workspace** when an initiative or task should have its own branch, agent chat, diff, and review path.
+Use a **new Cursor branch and chat** when an initiative or task should have its own context, diff, and review path.
 
-Use **multiple chats in one workspace** when agents need to collaborate on the same current branch and file state.
+Use **multiple chats on one branch** when agents need to collaborate on the same current file state.
 
 Use **user-level skills** at `~/.agents/skills/` when the same skills should be available across all repositories on the machine.
 
@@ -124,8 +96,6 @@ Use **Git submodules** only when the initiative truly needs to remain a separate
 
 ## Useful References
 
-- Conductor workspaces: https://www.conductor.build/docs/concepts/workspaces-and-branches
-- Conductor first workspace: https://www.conductor.build/docs/first-workspace
-- Conductor scripts: https://www.conductor.build/docs/reference/scripts
-- Codex skills: https://learn.chatgpt.com/docs/build-skills
-- Codex `AGENTS.md`: https://learn.chatgpt.com/docs/agent-configuration/agents-md
+- Cursor Cloud Agents: https://docs.cursor.com/cloud-agent
+- Cursor rules and `AGENTS.md`: https://docs.cursor.com/context/rules
+- Cursor project MCP: https://docs.cursor.com/context/model-context-protocol

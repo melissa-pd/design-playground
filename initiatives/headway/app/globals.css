@@ -529,6 +529,18 @@ button {
   border: 1px solid #ebebeb;
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(16, 16, 16, 0.06);
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+
+.search-estimate:hover {
+  background: #eaf7f1;
+  border-color: #4fa86b;
+}
+
+.search-estimate:hover .search-faq-chevron path {
+  fill: #4fa86b;
 }
 
 .search[data-layout="desktop"] .search-estimate {

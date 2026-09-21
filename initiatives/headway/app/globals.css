@@ -255,8 +255,7 @@ button {
   width: 160px;
 }
 
-.search-logo img,
-.search-footer-brand img {
+.search-logo img {
   display: block;
   width: 100%;
   height: auto;
@@ -278,8 +277,7 @@ button {
   margin-right: 8px;
 }
 
-.search-nav button,
-.search-footer button {
+.search-nav button {
   padding: 8px 16px;
   color: #353535;
   background: transparent;
@@ -479,6 +477,7 @@ button {
 .search-sticky button:focus-visible,
 .search-nav button:focus-visible,
 .search-footer button:focus-visible,
+.search-footer a:focus-visible,
 .explorer-variant select:focus-visible,
 .search-form input:focus-visible,
 .search-form select:focus-visible {
@@ -1048,49 +1047,179 @@ button {
 }
 
 .search-footer {
-  display: grid;
-  gap: 28px;
-  padding: 40px 16px 96px;
-  color: #f4f1ea;
-  background: #212326;
+  color: #353535;
+  background: #e7f7f0;
 }
 
-.search[data-layout="desktop"] .search-footer {
-  grid-template-columns: 220px minmax(0, 1fr);
-  padding: 64px 144px 72px;
+.search-footer-inner {
+  display: grid;
+  gap: 32px;
+  padding: 40px 16px 48px;
+}
+
+.search[data-layout="desktop"] .search-footer-inner {
+  padding: 64px 136px;
+}
+
+.search-footer-nav,
+.search-footer-bottom {
+  display: grid;
+  gap: 28px 16px;
+}
+
+.search-footer-nav {
+  grid-template-columns: 1fr 1fr;
+}
+
+.search-footer-logo {
+  display: block;
+  grid-column: 1 / -1;
+  width: 160px;
+  height: auto;
+}
+
+.search[data-layout="desktop"] .search-footer-nav,
+.search[data-layout="desktop"] .search-footer-bottom {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0 32px;
+  align-items: start;
+}
+
+.search[data-layout="desktop"] .search-footer-nav {
+  min-height: 208px;
+}
+
+.search[data-layout="desktop"] .search-footer-bottom {
+  min-height: 278px;
+}
+
+.search[data-layout="desktop"] .search-footer-logo,
+.search[data-layout="desktop"] .search-footer-brand,
+.search[data-layout="desktop"] .search-footer-crisis,
+.search[data-layout="desktop"] .search-footer-legal {
+  grid-column: span 2;
+}
+
+.search-footer-col {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.search-footer h3 {
+  margin: 0;
+  color: #353535;
+  font-family: var(--font-body-stack);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 22px;
+}
+
+.search-footer ul {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.search-footer li {
+  padding-bottom: 8px;
+}
+
+.search-footer-col button,
+.search-footer-legal button {
+  display: block;
+  padding: 0;
+  color: #353535;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 22px;
+  text-align: left;
+}
+
+.search-footer-rule {
+  height: 1px;
+  margin: 0;
+  border: 0;
+  background: rgba(33, 36, 38, 0.07);
+}
+
+.search-footer-brand {
+  display: grid;
+  gap: 12px;
+  align-content: start;
 }
 
 .search-footer-brand p {
-  margin-top: 12px;
-  color: rgba(255, 255, 255, 0.72);
+  padding: 5.5px 0 2.5px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.search-footer-social {
+  display: flex;
+}
+
+.search-footer-social button {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-right: 12px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid rgba(33, 36, 38, 0.07);
+  border-radius: 20px;
+}
+
+.search-footer-social img {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+
+.search-footer-crisis {
+  display: grid;
+  gap: 20px;
+  align-content: start;
   font-size: 14px;
+  line-height: 18px;
 }
 
-.search-footer-brand img {
-  filter: brightness(0) invert(1);
+.search-footer-crisis strong {
+  font-weight: 500;
 }
 
-.search-footer-cols {
+.search-footer-resources {
   display: grid;
   gap: 20px;
 }
 
-.search[data-layout="desktop"] .search-footer-cols {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+.search-footer-resources div {
+  display: grid;
+  gap: 4.5px;
 }
 
-.search-footer h3 {
-  margin: 0 0 8px;
-  color: #fff;
+.search-footer-resources a,
+.search-footer-resources span {
   font-size: 14px;
-  font-weight: 650;
+  line-height: 18px;
 }
 
-.search-footer button {
-  display: block;
-  padding: 4px 0;
-  color: rgba(255, 255, 255, 0.78);
-  text-align: left;
+.search-footer-resources a {
+  color: #353535;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.search-footer-legal button {
+  padding: 2.5px 0 1.5px;
+  font-size: 14px;
+  line-height: 18px;
 }
 
 .search-sticky {

@@ -15,6 +15,37 @@ import type { VariantId } from "./variants";
 const pageSize = 4;
 const shortListSize = 3;
 
+const footerColumns = [
+  {
+    title: "Find care",
+    links: ["Therapists", "Psychiatrists", "By specialty", "Online therapy", "Therapy resources"],
+  },
+  {
+    title: "Providers",
+    links: ["Join Headway", "Provider portal", "Refer provider", "Provider resources"],
+  },
+  {
+    title: "Company",
+    links: ["About us", "Company blog", "Press", "Careers"],
+  },
+  {
+    title: "Support",
+    links: ["Help center", "Contact us", "For health plans", "Sitemap", "FAQs"],
+  },
+] as const;
+
+const legalLinks = [
+  "Terms of Service",
+  "Privacy Policy",
+  "Supplemental Payment Terms",
+  "HIPAA Notice of Privacy Practices",
+  "CA Privacy Policy for Business Customers",
+  "Washington State Consumer Health Data Privacy Policy",
+  "Biometric Data Policy",
+  "Accessibility",
+  "Vulnerability Disclosure",
+] as const;
+
 export type SearchState = {
   zip: string;
   insurance: string;
@@ -308,35 +339,70 @@ export function SearchPage({
       </p>
 
       <footer className="search-footer">
-        <div className="search-footer-brand">
-          <img src="/logo.png" alt="" width={140} height={28} />
-          <p>Find mental health care, covered by insurance.</p>
-        </div>
-        <div className="search-footer-cols">
-          <div>
-            <h3>Get care</h3>
-            <button type="button" onClick={findCare}>Find a therapist</button>
-            <button type="button" onClick={findCare}>Search providers</button>
-            <button type="button">Insurance</button>
-            <button type="button">FAQs</button>
-          </div>
-          <div>
-            <h3>For providers</h3>
-            <button type="button">Join Headway</button>
-            <button type="button">Provider resources</button>
-            <button type="button">Refer a patient</button>
-          </div>
-          <div>
-            <h3>Company</h3>
-            <button type="button">About</button>
-            <button type="button">Careers</button>
-            <button type="button">Press</button>
-          </div>
-          <div>
-            <h3>Legal</h3>
-            <button type="button">Privacy</button>
-            <button type="button">Terms</button>
-            <button type="button">Accessibility</button>
+        <div className="search-footer-inner">
+          <nav className="search-footer-nav" aria-label="Footer">
+            <img
+              className="search-footer-logo"
+              src="/icons/footer-logo.svg"
+              alt="Headway"
+              width={160}
+              height={31}
+            />
+            {footerColumns.map((column) => (
+              <div className="search-footer-col" key={column.title}>
+                <h3>{column.title}</h3>
+                <ul>
+                  {column.links.map((link) => (
+                    <li key={link}>
+                      <button type="button" onClick={link === "Therapists" ? findCare : undefined}>
+                        {link}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </nav>
+          <hr className="search-footer-rule" />
+          <div className="search-footer-bottom">
+            <div className="search-footer-brand">
+              <p>© 2026 Therapymatch, Inc.</p>
+              <div className="search-footer-social">
+                <button type="button" aria-label="Instagram">
+                  <img src="/icons/icon-instagram.svg" alt="" width={18} height={18} />
+                </button>
+                <button type="button" aria-label="X">
+                  <img src="/icons/icon-x.svg" alt="" width={18} height={18} />
+                </button>
+                <button type="button" aria-label="LinkedIn">
+                  <img src="/icons/icon-linkedin.svg" alt="" width={18} height={18} />
+                </button>
+              </div>
+            </div>
+            <div className="search-footer-crisis">
+              <p>
+                If you&apos;re experiencing emotional distress, the resources below provide free
+                and confidential support 24/7.{" "}
+                <strong>If this is an emergency, call 911.</strong>
+              </p>
+              <div className="search-footer-resources">
+                <div>
+                  <a href="https://988lifeline.org/">Suicide Prevention Lifeline</a>
+                  <span>Call or text 988</span>
+                </div>
+                <div>
+                  <a href="https://www.crisistextline.org/">Crisis Text Line</a>
+                  <span>Text HOME to 741741</span>
+                </div>
+              </div>
+            </div>
+            <ul className="search-footer-legal">
+              {legalLinks.map((link) => (
+                <li key={link}>
+                  <button type="button">{link}</button>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </footer>

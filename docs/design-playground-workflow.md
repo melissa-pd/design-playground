@@ -13,6 +13,9 @@ Keep shared skills at the repo root:
   skills/
 .claude/
   skills/
+.cursor/
+  mcp.json
+.mcp.json
 initiatives/
   onboarding-flow/
   homepage-concept/

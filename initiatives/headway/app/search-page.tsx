@@ -536,7 +536,9 @@ function ProviderCard({
         <div className="search-card-actions">
           <div>
             <p>{provider.nextOpening}</p>
-            {provider.freeConsult ? <p>Offers free consultations</p> : null}
+            {provider.freeConsult ? (
+              <p className="search-consult">Offers free consultations</p>
+            ) : null}
           </div>
           <button type="button">View profile and book</button>
         </div>

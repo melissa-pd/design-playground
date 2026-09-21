@@ -822,6 +822,11 @@ button {
   margin: 0;
 }
 
+.search-card p.search-consult {
+  color: #4fa86b;
+  font-weight: 500;
+}
+
 .search-card button {
   box-sizing: border-box;
   min-height: 36px;

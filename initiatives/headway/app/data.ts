@@ -32,7 +32,7 @@ export const providers: Provider[] = [
     specialties: "Relationship issues, communication, life transitions",
     style: "Warm, structured, direct",
     insuranceCount: 4,
-    nextOpening: "Next opening Tuesday",
+    nextOpening: "Next opening Tuesday 9/22",
     initials: "EV",
     tone: "#d0eee0",
   },
@@ -45,7 +45,7 @@ export const providers: Provider[] = [
     specialties: "Couples conflict, trust, family dynamics",
     style: "Steady, curious, plainspoken",
     insuranceCount: 6,
-    nextOpening: "Next opening Thursday",
+    nextOpening: "Next opening Thursday 9/24",
     initials: "MH",
     tone: "#ffcfbd",
   },
@@ -58,7 +58,7 @@ export const providers: Provider[] = [
     specialties: "Anxiety, cultural identity, relationship issues",
     style: "Affirming, calm, specific",
     insuranceCount: 5,
-    nextOpening: "Next opening Friday",
+    nextOpening: "Next opening Friday 9/25",
     initials: "PN",
     tone: "#a3d1ff",
   },
@@ -71,7 +71,7 @@ export const providers: Provider[] = [
     specialties: "Communication, anger, life transitions",
     style: "Direct, coaching, collaborative",
     insuranceCount: 3,
-    nextOpening: "Next opening next Monday",
+    nextOpening: "Next opening Monday 9/28",
     initials: "JE",
     tone: "#fce382",
   },
@@ -84,7 +84,7 @@ export const providers: Provider[] = [
     specialties: "Intimacy, identity, relationship issues",
     style: "Affirming, inquisitive, gentle",
     insuranceCount: 4,
-    nextOpening: "Next opening Wednesday",
+    nextOpening: "Next opening Wednesday 9/23",
     initials: "CO",
     tone: "#e08a6b",
   },
@@ -97,7 +97,7 @@ export const providers: Provider[] = [
     specialties: "Work stress, conflict, parenting",
     style: "Practical, direct, encouraging",
     insuranceCount: 7,
-    nextOpening: "Next opening Thursday",
+    nextOpening: "Next opening Thursday 10/1",
     initials: "AB",
     tone: "#a1dec2",
   },
@@ -105,33 +105,50 @@ export const providers: Provider[] = [
 
 export const faqs = [
   {
+    id: "kind",
+    question: "What kind of therapy is best for couples?",
+    answer:
+      "Couples therapy helps partners improve communication, resolve conflicts, and build stronger relationships. Approaches like the Gottman Method and Emotionally Focused Therapy can be effective.",
+  },
+  {
     id: "cost",
     question: "How much does couples therapy cost in Washington?",
     answer:
-      "With insurance, many people pay a copay, and some sessions are $0. Self-pay varies by provider. A cost estimate uses your plan, not a guess from the directory.",
+      "Once you choose a therapist and enter your insurance details, a real product would verify coverage and estimate in-network session costs. This prototype does not check a plan. Patients in the reference page save an average of 75%, and many pay as little as $0.",
   },
   {
-    id: "choose",
-    question: "How do I choose a couples therapy specialist in Washington?",
+    id: "covered",
+    question: "Is couples therapy covered by insurance in Washington?",
     answer:
-      "Start with format, insurance, and the next opening you can both attend. Then read how they work with couples, not only the list of specialties.",
-  },
-  {
-    id: "prepare",
-    question: "How should I prepare for couples therapy sessions?",
-    answer:
-      "Agree on one conversation you want help with. You do not need a polished story. The first session is for fit, goals, and whether you want to continue together.",
+      "Most plans include some mental health coverage, and many include couples therapy. Enter a plan on the search to see who lists it. Nothing here verifies benefits or books a visit.",
   },
 ];
 
-export const specialtyMix = [
-  { label: "Relationship issues", share: "64%" },
-  { label: "Anxiety", share: "41%" },
-  { label: "Family therapy", share: "22%" },
-  { label: "Life transitions", share: "18%" },
+export const specialtyStats = [
+  { share: "98%", label: "Anxiety" },
+  { share: "94%", label: "Depression" },
+  { share: "88%", label: "Stress management" },
+  { share: "88%", label: "Relationship issues" },
+  { share: "83%", label: "Trauma" },
 ];
 
-export const clientFormats = [
-  { label: "Virtual", share: "78%" },
-  { label: "In person", share: "22%" },
+export const insuranceStats = [
+  { share: "98%", label: "Aetna" },
+  { share: "90%", label: "Regence BlueShield of Washington" },
+  { share: "87%", label: "Carelon Behavioral Health" },
+  { share: "86%", label: "Cigna" },
+  { share: "49%", label: "Providence Health Plan" },
+];
+
+export const languageStats = [
+  { share: "99%", label: "English" },
+  { share: "5%", label: "Spanish" },
+  { share: "2%", label: "Mandarin" },
+  { share: "1%", label: "French" },
+  { share: "1%", label: "Arabic" },
+];
+
+export const formatStats = [
+  { share: "88%", label: "Online only" },
+  { share: "12%", label: "In-person or online" },
 ];

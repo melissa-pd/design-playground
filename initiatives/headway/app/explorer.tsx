@@ -1,0 +1,171 @@
+"use client";
+
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { insurancePlans } from "./data";
+import { SearchPage, type SearchState } from "./search-page";
+import { isVariantId, isViewportId, variants, type VariantId, type ViewportId } from "./variants";
+
+const frameWidth = {
+  mobile: 390,
+  desktop: 1440,
+} as const;
+
+export function Explorer() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const requestedViewport = searchParams.get("viewport");
+  const requestedVariant = searchParams.get("variant");
+  const viewport: ViewportId = isViewportId(requestedViewport) ? requestedViewport : "both";
+  const variant: VariantId = isVariantId(requestedVariant) ? requestedVariant : "baseline";
+  const hypothesis = variants.find((item) => item.id === variant)?.hypothesis ?? variants[0].hypothesis;
+
+  const [zip, setZip] = useState("98101");
+  const [insurance, setInsurance] = useState<string>(insurancePlans[0]);
+  const [page, setPage] = useState(1);
+  const [expanded, setExpanded] = useState(false);
+  const [openFaq, setOpenFaq] = useState<string | null>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+
+  const frames = viewport === "both" ? (["mobile", "desktop"] as const) : ([viewport] as const);
+  const naturalWidth = frames.reduce((sum, frame) => sum + frameWidth[frame], 0) + (frames.length - 1) * 28;
+
+  const state: SearchState = useMemo(
+    () => ({ zip, insurance, page, expanded, openFaq }),
+    [zip, insurance, page, expanded, openFaq],
+  );
+
+  useLayoutEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) return;
+
+    const measure = () => {
+      const available = stage.clientWidth - 48;
+      setScale(Math.min(1, available / naturalWidth));
+    };
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(stage);
+    return () => observer.disconnect();
+  }, [naturalWidth]);
+
+  function replaceQuery(next: { viewport?: ViewportId; variant?: VariantId }) {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("viewport", next.viewport ?? viewport);
+    params.set("variant", next.variant ?? variant);
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  }
+
+  function selectVariant(next: VariantId) {
+    setPage(1);
+    setExpanded(false);
+    replaceQuery({ variant: next });
+  }
+
+  return (
+    <div className="explorer">
+      <aside className="explorer-rail">
+        <p className="explorer-kicker">Headway</p>
+        <p className="explorer-title">Search page</p>
+        <fieldset>
+          <legend>Viewport</legend>
+          <div className="explorer-viewports">
+            {(["mobile", "desktop", "both"] as const).map((option) => (
+              <label key={option}>
+                <input
+                  type="radio"
+                  name="viewport"
+                  value={option}
+                  checked={viewport === option}
+                  onChange={() => replaceQuery({ viewport: option })}
+                />
+                {option === "mobile" ? "Mobile" : option === "desktop" ? "Desktop" : "Both"}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+        <label className="explorer-variant">
+          Variant
+          <select
+            value={variant}
+            onChange={(event) => {
+              const next = event.target.value;
+              if (isVariantId(next)) selectVariant(next);
+            }}
+          >
+            {variants.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <p className="explorer-hypothesis">{hypothesis}</p>
+      </aside>
+      <div className="explorer-stage" ref={stageRef}>
+        <div className="explorer-frames" style={{ gap: 28 * scale }}>
+          {frames.map((frame) => (
+            <DeviceFrame key={frame} layout={frame} scale={scale}>
+              <SearchPage
+                layout={frame}
+                variant={variant}
+                state={state}
+                onZipChange={setZip}
+                onInsuranceChange={(next) => {
+                  setInsurance(next);
+                  setPage(1);
+                }}
+                onPageChange={setPage}
+                onExpandedChange={setExpanded}
+                onFaqChange={setOpenFaq}
+              />
+            </DeviceFrame>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DeviceFrame({
+  layout,
+  scale,
+  children,
+}: {
+  layout: "mobile" | "desktop";
+  scale: number;
+  children: React.ReactNode;
+}) {
+  const frameRef = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState(800);
+  const width = frameWidth[layout];
+
+  useLayoutEffect(() => {
+    const frame = frameRef.current;
+    if (!frame) return;
+
+    const measure = () => setHeight(frame.offsetHeight);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(frame);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <figure className="explorer-slot" style={{ width: width * scale }}>
+      <figcaption>{layout === "mobile" ? "Mobile · 390" : "Desktop · 1440"}</figcaption>
+      <div className="explorer-scale" style={{ height: height * scale }}>
+        <div
+          ref={frameRef}
+          className="explorer-frame"
+          style={{ width, transform: `scale(${scale})` }}
+        >
+          {children}
+        </div>
+      </div>
+    </figure>
+  );
+}

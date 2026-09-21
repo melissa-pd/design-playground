@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "A clearer path to care | Headway search concept",
+  title: "Couples therapy search | Headway variant explorer",
   description:
-    "A speculative, code-first product design concept for transparent therapist search results.",
+    "A speculative explorer for a couples therapy search page, with mobile, desktop, and a few design variants.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

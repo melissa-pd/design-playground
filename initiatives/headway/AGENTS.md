@@ -1,28 +1,27 @@
-# Headway Search Results Riff
+# Headway search page explorer
 
-This initiative is a speculative, code-first prototype for a Headway job application.
+This initiative is a speculative prototype of Headway's couples search page, built for a product design application.
 
 ## Product intent
 
-- Treat search as a decision surface, not a provider directory.
-- Help patients understand why a provider matches, what is available next, and what action to take.
-- Cover ranked cards, conversion-oriented filters and sort, match explanations, and full, sparse, and empty result states.
-- Build a distinct point of view rather than a pixel clone.
+- Show the couples search page from the Figma reference: hero, cost estimate, provider cards, local proof, FAQ, and footer.
+- Compare that page at mobile and desktop widths, including both at once.
+- Explore three variants of the same page: baseline directory, match reasons on the card, and a short ranked list.
+- Keep provider data fictional. Do not reuse real provider names, photos, or profile copy from the Figma capture.
 
 ## Source boundaries
 
-- Public references: `https://headway.co/`, `https://care.headway.co/therapists`, and Headway's Senior Product Designer, Search Results role.
-- Use mock therapist data only. Do not scrape or reuse real provider names, photos, or profile copy.
-- Extracted tokens are starter evidence from public pages, not a complete or authoritative Headway design system.
-- If extraction is blocked, label manually observed brand values as observed rather than extracted.
+- Visual reference: the `1440w default` frame in the Headway Exploration Figma file.
+- Public references: `https://headway.co/` and Headway's Senior Product Designer, Search Results role.
+- Extracted tokens are starter evidence from one public marketing page, not a complete Helix system.
 
 ## Technical direction
 
 - Keep this Next.js app self-contained inside `initiatives/headway/`.
-- Import starter tokens from `design-system/tokens.css`; keep riff-specific semantic variables in app CSS.
+- Import starter tokens from `design-system/tokens.css`.
+- Viewport and variant live in the URL.
 - No backend, authentication, booking flow, provider profile, or real Headway API.
-- Verify the working experience on desktop and mobile, including keyboard operation.
-- Deploy a Vercel preview as the sendable artifact; do not deploy to production.
+- Verify Mobile, Desktop, Both, and each variant, including keyboard operation.
 <!-- BEGIN:nextjs-agent-rules -->
 
 # This is NOT the Next.js you know

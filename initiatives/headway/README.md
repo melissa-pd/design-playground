@@ -1,16 +1,20 @@
-# Headway search results riff
+# Headway search page explorer
 
-A speculative, code-first prototype built for a Headway product design application. It argues that therapist search should be a decision surface, not a directory: every result should explain why the provider fits, what is available next, and how to move forward.
+A speculative prototype of Headway's couples search page. It is not affiliated with Headway and it is not a reproduction of their product. Therapist names, portraits, bios, and availability are fictional.
 
-This is not affiliated with Headway and is not a reproduction of their product. Provider data, names, portraits, availability, and match explanations are fictional.
+The page follows the Figma frame `1440w default`: a Washington couples search with zip, insurance, provider cards, local proof, and a short FAQ. An explorer rail switches viewport and variant.
 
-## Prototype scope
+## Viewports
 
-- Ranked therapist cards with visible match logic
-- Filters and sorting centered on decision-critical signals
-- Full, sparse, and empty result states
-- Responsive desktop and mobile layouts
-- Local mock data only; no backend or real Headway API
+- Mobile, 390 wide
+- Desktop, 1440 wide
+- Both, side by side
+
+## Variants
+
+- Baseline: scan a directory after a light zip and insurance form
+- Why this match: each card leads with why it fits the search
+- Short list: a ranked handful, with a quiet path to more
 
 ## Run locally
 

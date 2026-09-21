@@ -775,8 +775,7 @@ button {
   font-weight: 650;
 }
 
-.search-quiet,
-.search-pager button {
+.search-quiet {
   min-height: 40px;
   margin-top: 20px;
   padding: 0 16px;
@@ -788,12 +787,70 @@ button {
 
 .search-pager {
   display: flex;
-  gap: 8px;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.search-pager-pages {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.search-pager button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  color: #353535;
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 22px;
+}
+
+.search-pager button:hover:not(:disabled):not([aria-current="page"]) {
+  background: #f7f8f9;
 }
 
 .search-pager button[aria-current="page"] {
-  color: #fff;
-  background: #212326;
+  color: #212326;
+  background: #f1f3f4;
+  font-weight: 500;
+}
+
+.search-pager-step img {
+  display: block;
+  transform: rotate(90deg);
+}
+
+.search-pager-next img {
+  transform: rotate(-90deg);
+}
+
+.search-pager button:disabled {
+  color: #c4c4c4;
+  cursor: default;
+  opacity: 0.45;
+}
+
+.search-pager-count {
+  margin: 0;
+  color: #353535;
+  font-size: 15px;
+  line-height: 22px;
+  text-align: center;
+}
+
+.search-pager-count span {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .search-about h2,

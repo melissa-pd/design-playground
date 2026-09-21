@@ -12,7 +12,7 @@ import {
 } from "./data";
 import type { VariantId } from "./variants";
 
-const pageSize = 4;
+const pageSize = 8;
 const shortListSize = 3;
 
 const footerColumns = [
@@ -78,6 +78,8 @@ export function SearchPage({
   const directory = variant !== "short-list" || state.expanded;
   const pageCount = Math.ceil(providers.length / pageSize);
   const page = Math.min(state.page, pageCount);
+  const rangeStart = (page - 1) * pageSize + 1;
+  const rangeEnd = Math.min(page * pageSize, providers.length);
   const visible = directory
     ? variant === "short-list"
       ? providers
@@ -236,20 +238,45 @@ export function SearchPage({
           </button>
         ) : (
           <nav className="search-pager" aria-label="Results pages">
-            {Array.from({ length: pageCount }, (_, index) => {
-              const number = index + 1;
-              const current = number === page;
-              return (
-                <button
-                  key={number}
-                  type="button"
-                  aria-current={current ? "page" : undefined}
-                  onClick={() => onPageChange(number)}
-                >
-                  {number}
-                </button>
-              );
-            })}
+            <div className="search-pager-pages">
+              <button
+                type="button"
+                className="search-pager-step"
+                aria-label="Previous page"
+                disabled={page === 1}
+                onClick={() => onPageChange(page - 1)}
+              >
+                <img src="/icons/icon-chevron.svg" alt="" width={16} height={16} />
+              </button>
+              {Array.from({ length: pageCount }, (_, index) => {
+                const number = index + 1;
+                const current = number === page;
+                return (
+                  <button
+                    key={number}
+                    type="button"
+                    aria-current={current ? "page" : undefined}
+                    aria-label={`Page ${number}`}
+                    onClick={() => onPageChange(number)}
+                  >
+                    {number}
+                  </button>
+                );
+              })}
+              <button
+                type="button"
+                className="search-pager-step search-pager-next"
+                aria-label="Next page"
+                disabled={page === pageCount}
+                onClick={() => onPageChange(page + 1)}
+              >
+                <img src="/icons/icon-chevron.svg" alt="" width={16} height={16} />
+              </button>
+            </div>
+            <p className="search-pager-count">
+              {rangeStart} - {rangeEnd} of {providers.length}{" "}
+              <span>available therapists</span>
+            </p>
           </nav>
         )}
       </section>

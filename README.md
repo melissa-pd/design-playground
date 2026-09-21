@@ -42,7 +42,7 @@ The bencium and accesslint repos declare MIT in their README rather than shippin
 
 ## MCP
 
-`.cursor/mcp.json` (Cursor) and `.mcp.json` (Claude Code) both start the extract-design-system MCP server with `npx -y extract-design-system-mcp`. Keep those two files in sync. After cloning, restart Cursor or Claude Code so the tools appear.
+`.cursor/mcp.json` (Cursor) and `.mcp.json` (Claude Code) both start the extract-design-system MCP server with `npx -y --package=extract-design-system extract-design-system-mcp`. Keep those two files in sync. After cloning, restart Cursor or Claude Code so the tools appear.
 
 | Tool | Use it to |
 | --- | --- |

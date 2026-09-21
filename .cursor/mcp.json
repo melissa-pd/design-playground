@@ -2,7 +2,7 @@
   "mcpServers": {
     "extract-design-system": {
       "command": "npx",
-      "args": ["-y", "extract-design-system-mcp"]
+      "args": ["-y", "--package=extract-design-system", "extract-design-system-mcp"]
     }
   }
 }

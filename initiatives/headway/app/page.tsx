@@ -15,7 +15,31 @@ import {
   VideoCamera,
   X,
 } from "@phosphor-icons/react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+
+type DebugData = Record<string, boolean | number | string | null | string[]>;
+
+function writeDebugLog(
+  hypothesisId: string,
+  location: string,
+  message: string,
+  data: DebugData,
+) {
+  const body = JSON.stringify({
+    hypothesisId,
+    location,
+    message,
+    data,
+    timestamp: Date.now(),
+  });
+
+  void fetch("/api/debug-log", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body,
+    keepalive: true,
+  }).catch(() => undefined);
+}
 
 type FormatFilter = "all" | "virtual" | "in-person";
 type SpecialtyFilter =
@@ -323,6 +347,135 @@ export default function Home() {
   const [sort, setSort] = useState<SortOption>("match");
   const [savedIds, setSavedIds] = useState<Set<number>>(() => new Set());
   const [notice, setNotice] = useState<string | null>(null);
+  const debugInstanceId = useRef<string | null>(null);
+
+  useEffect(() => {
+    const instanceId = debugInstanceId.current ?? crypto.randomUUID();
+    debugInstanceId.current = instanceId;
+    const navigation = performance.getEntriesByType(
+      "navigation",
+    )[0] as PerformanceNavigationTiming | undefined;
+
+    // #region agent log
+    writeDebugLog("A,B", "app/page.tsx:Home mount", "Home mounted", {
+      instanceId,
+      url: window.location.href,
+      navigationType: navigation?.type ?? null,
+      timeOrigin: performance.timeOrigin,
+      historyLength: window.history.length,
+    });
+    // #endregion
+
+    return () => {
+      // #region agent log
+      writeDebugLog("A", "app/page.tsx:Home cleanup", "Home unmounted", {
+        instanceId,
+        url: window.location.href,
+      });
+      // #endregion
+    };
+  }, []);
+
+  useEffect(() => {
+    // #region agent log
+    writeDebugLog("A,C", "app/page.tsx:state effect", "State committed", {
+      instanceId: debugInstanceId.current,
+      format,
+      specialty,
+      availability,
+      sort,
+      savedIds: [...savedIds].toSorted((first, second) => first - second).map(String),
+      notice,
+    });
+    // #endregion
+  }, [availability, format, notice, savedIds, sort, specialty]);
+
+  useEffect(() => {
+    function handleLifecycleEvent(event: Event) {
+      const persisted =
+        event instanceof PageTransitionEvent ? event.persisted : null;
+
+      // #region agent log
+      writeDebugLog("A,B,D", "app/page.tsx:lifecycle listener", "Browser lifecycle event", {
+        instanceId: debugInstanceId.current,
+        eventType: event.type,
+        persisted,
+        url: window.location.href,
+        historyLength: window.history.length,
+      });
+      // #endregion
+    }
+
+    function handleSubmit(event: SubmitEvent) {
+      const form = event.target instanceof HTMLFormElement ? event.target : null;
+
+      // #region agent log
+      writeDebugLog("B,D", "app/page.tsx:submit listener", "Document submit observed", {
+        instanceId: debugInstanceId.current,
+        defaultPrevented: event.defaultPrevented,
+        formAction: form?.action ?? null,
+        submitterTag:
+          event.submitter instanceof HTMLElement
+            ? event.submitter.tagName.toLowerCase()
+            : null,
+        url: window.location.href,
+      });
+      // #endregion
+    }
+
+    function handleInteraction(event: Event) {
+      const target = event.target instanceof HTMLElement ? event.target : null;
+      const interactive = target?.closest("button, a, select, input") ?? null;
+      const form = interactive?.closest("form") ?? null;
+      const anchor = interactive instanceof HTMLAnchorElement ? interactive : null;
+      const control =
+        interactive instanceof HTMLInputElement ||
+        interactive instanceof HTMLSelectElement
+          ? interactive
+          : null;
+
+      // #region agent log
+      writeDebugLog("C,D", "app/page.tsx:interaction listener", "Interaction completed", {
+        instanceId: debugInstanceId.current,
+        eventType: event.type,
+        targetTag: interactive?.tagName.toLowerCase() ?? null,
+        targetId: interactive?.id || null,
+        targetName: control?.name || null,
+        targetValue: control?.value ?? null,
+        buttonType:
+          interactive instanceof HTMLButtonElement ? interactive.type : null,
+        anchorHref: anchor?.href ?? null,
+        formAction: form?.action ?? null,
+        defaultPrevented: event.defaultPrevented,
+        url: window.location.href,
+      });
+      // #endregion
+    }
+
+    const lifecycleEvents = [
+      "beforeunload",
+      "pagehide",
+      "pageshow",
+      "popstate",
+      "hashchange",
+    ] as const;
+
+    lifecycleEvents.forEach((eventName) =>
+      window.addEventListener(eventName, handleLifecycleEvent),
+    );
+    document.addEventListener("submit", handleSubmit);
+    document.addEventListener("click", handleInteraction);
+    document.addEventListener("change", handleInteraction);
+
+    return () => {
+      lifecycleEvents.forEach((eventName) =>
+        window.removeEventListener(eventName, handleLifecycleEvent),
+      );
+      document.removeEventListener("submit", handleSubmit);
+      document.removeEventListener("click", handleInteraction);
+      document.removeEventListener("change", handleInteraction);
+    };
+  }, []);
 
   const filteredProviders = useMemo(() => {
     const nextProviders = providers.filter((provider) => {

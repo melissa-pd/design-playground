@@ -84,11 +84,15 @@ export function SearchPage({
             <button type="button" onClick={findCare}>
               Search providers
             </button>
-            <button type="button" onClick={findCare}>
+            <button type="button" className="search-nav-item" onClick={findCare}>
               Find care
             </button>
-            <button type="button">For providers</button>
-            <button type="button">Company</button>
+            <button type="button" className="search-nav-item">
+              For providers
+            </button>
+            <button type="button" className="search-nav-item">
+              Company
+            </button>
           </nav>
           <div className="search-header-cta">
             <button type="button" className="search-portal">
@@ -143,7 +147,11 @@ export function SearchPage({
                   onChange={(event) => onInsuranceChange(event.target.value)}
                 >
                   {insurancePlans.map((plan) => (
-                    <option key={plan}>{plan}</option>
+                    <option key={plan} value={plan}>
+                      {plan === "Aetna"
+                        ? "Aetna, Cigna, Blue Cross Blue Shield, +70 more"
+                        : plan}
+                    </option>
                   ))}
                 </select>
                 <img className="search-chevron" src="/icons/icon-chevron.svg" alt="" width={16} height={16} />
@@ -160,13 +168,23 @@ export function SearchPage({
         </div>
       </section>
 
+      <button type="button" className="search-estimate" onClick={findCare}>
+        <img src="/art/calculator.png" alt="" width={56} height={45} />
+        <span>
+          <strong>Get a cost estimate</strong>
+          <span>People with insurance pay as low as $0 per session through Headway</span>
+        </span>
+        <Chevron open={false} />
+      </button>
+
       <section className="search-results" id={`results-${layout}`} aria-labelledby={`results-title-${layout}`}>
         <div className="search-results-intro">
           <h2 id={`results-title-${layout}`}>{resultsTitle}</h2>
           <p>
-            Our couples therapists in Washington can help you and your partner work through
-            relationship challenges. Sessions are affordable, with average savings of 75% and many
-            patients paying as little as $0 after insurance.
+            Work through relationship challenges with a couples therapist who understands your
+            unique dynamic. Headway connects you with experienced providers across Washington,
+            offering affordable sessions with an average savings of 75% through insurance—many
+            patients pay as low as $0 per session.
           </p>
           {variant === "why-this-match" ? (
             <p>Each card leads with why it fits couples care in Washington.</p>
@@ -218,12 +236,16 @@ export function SearchPage({
         <h2 id={`about-${layout}`}>About our couples therapists in Washington</h2>
         <div className="search-stat-row">
           <article className="search-stat">
-            <div className="search-stat-art" data-art="people" aria-hidden="true" />
+            <div className="search-stat-art" data-art="people">
+              <img src="/art/stat-people.png" alt="" />
+            </div>
             <p>Number of therapists serving Washington</p>
             <strong>590+</strong>
           </article>
           <article className="search-stat">
-            <div className="search-stat-art" data-art="books" aria-hidden="true" />
+            <div className="search-stat-art" data-art="books">
+              <img src="/art/stat-books.png" alt="" />
+            </div>
             <p>Average years in practice</p>
             <strong>10 years</strong>
           </article>
@@ -241,7 +263,7 @@ export function SearchPage({
       <section className="search-faq" aria-labelledby={`faq-${layout}`}>
         <div className="search-faq-intro">
           <h2 id={`faq-${layout}`}>Frequently asked questions</h2>
-          <ChairArt />
+          <img className="search-chair" src="/art/chair.png" alt="" width={240} height={238} />
         </div>
         <div>
           {faqs.map((faq) => {
@@ -264,7 +286,11 @@ export function SearchPage({
       </section>
 
       <section className="search-close" aria-labelledby={`close-${layout}`}>
-        <div className="search-close-photo" aria-hidden="true" />
+        <img
+          className="search-close-photo"
+          src="/art/patient.png"
+          alt=""
+        />
         <div className="search-close-copy">
           <h2 id={`close-${layout}`}>Find the right couples therapist for you</h2>
           <p>
@@ -324,12 +350,6 @@ export function SearchPage({
         </div>
       </footer>
 
-      <div className="search-sticky">
-        <p>Not sure who&apos;s the right fit? Filter 592 therapists with your preferences</p>
-        <button type="button" onClick={findCare}>
-          Get started
-        </button>
-      </div>
     </div>
   );
 }
@@ -414,6 +434,13 @@ function Portrait({ id }: { id: string }) {
   );
 }
 
+const statArt: Record<string, string> = {
+  leaves: "/art/stat-specialties.png",
+  cards: "/art/stat-insurance.png",
+  speech: "/art/stat-languages.png",
+  session: "/art/stat-session.png",
+};
+
 function StatList({
   title,
   art,
@@ -425,7 +452,9 @@ function StatList({
 }) {
   return (
     <article className="search-mix">
-      <div className="search-stat-art" data-art={art} aria-hidden="true" />
+      <div className="search-stat-art" data-art={art}>
+        <img src={statArt[art]} alt="" />
+      </div>
       <h3>{title}</h3>
       <ul>
         {items.map((item) => (
@@ -450,14 +479,3 @@ function Chevron({ open }: { open: boolean }) {
   );
 }
 
-function ChairArt() {
-  return (
-    <svg className="search-chair" viewBox="0 0 160 150" aria-hidden="true">
-      <ellipse cx="80" cy="132" rx="46" ry="8" fill="#e7efe4" />
-      <path d="M48 78c0-28 14-48 32-48s32 20 32 48v28H48V78z" fill="#f4efe6" />
-      <path d="M44 104h72v10c0 8-16 14-36 14s-36-6-36-14v-10z" fill="#0b663d" />
-      <path d="M58 40c8-16 36-16 44 0" fill="none" stroke="#c47b5a" strokeWidth="6" strokeLinecap="round" />
-      <circle cx="80" cy="34" r="10" fill="#e8c4a8" />
-    </svg>
-  );
-}

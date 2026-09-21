@@ -538,7 +538,7 @@ button {
 .search-close button:focus-visible,
 .search-card button:focus-visible,
 .search-pick button:focus-visible,
-.search-sort select:focus-visible,
+.search-sort:has(select:focus-visible),
 .search-info:focus-visible,
 .search-chip:focus-visible,
 .search-chip-panel input:focus-visible,
@@ -694,19 +694,17 @@ button {
   border: 0;
 }
 
-/* Results bar: count on the left, sort on the right */
+/* Toolbar: filters on the left, sort as a text control on the right */
 
-.search-results-bar {
+.search-toolbar {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  margin-top: 24px;
+  align-items: flex-start;
+  gap: var(--space-13);
+  margin-top: var(--space-13);
 }
 
-.search[data-layout="mobile"] .search-results-bar {
-  flex-direction: column;
-  align-items: stretch;
+.search-results-bar {
+  margin-top: var(--space-15);
 }
 
 .search-count {
@@ -719,21 +717,6 @@ button {
 .search-count strong {
   color: #0b663d;
   font-weight: 600;
-}
-
-.search-radius {
-  display: inline-flex;
-  gap: 2px;
-  align-items: center;
-}
-
-.search-radius .search-faq-chevron {
-  width: 12px;
-  height: 12px;
-}
-
-.search-radius .search-faq-chevron path {
-  fill: #0b663d;
 }
 
 .search-info {
@@ -765,32 +748,57 @@ button {
 }
 
 .search-sort {
+  position: relative;
   display: inline-flex;
-  gap: 8px;
+  flex: none;
+  gap: var(--space-2);
   align-items: center;
-  color: #353535;
+  min-height: 40px;
+  margin-left: auto;
+  color: #0b663d;
   font-size: 15px;
   font-weight: 600;
+  line-height: 22px;
   white-space: nowrap;
+  cursor: pointer;
 }
 
-.search-sort .search-control {
-  flex: 1;
-  min-height: 44px;
+.search-sort label {
+  cursor: pointer;
+}
+
+.search-sort-value {
+  font-weight: 600;
+}
+
+.search-sort .search-faq-chevron {
+  width: 14px;
+  height: 14px;
+}
+
+.search-sort .search-faq-chevron path {
+  fill: currentColor;
+}
+
+.search-sort:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .search-sort select {
-  appearance: none;
+  position: absolute;
+  inset: 0;
   width: 100%;
-  min-width: 0;
-  min-height: 42px;
-  padding: 0 32px 0 12px;
-  color: #353535;
-  background: transparent;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  appearance: none;
   border: 0;
+  background: transparent;
+  cursor: pointer;
   font-family: inherit;
   font-size: 15px;
-  font-weight: 400;
 }
 
 /* Filter bar */
@@ -798,38 +806,59 @@ button {
 .search-filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  flex: 1;
+  gap: var(--space-4);
   align-items: center;
-  margin-top: 16px;
+  min-width: 0;
+}
+
+/* Mobile: the sort control sits in the chip row and looks like a chip. */
+.search[data-layout="mobile"] .search-toolbar {
+  flex-wrap: wrap;
+  gap: var(--space-4);
 }
 
 .search[data-layout="mobile"] .search-filters {
-  flex-wrap: nowrap;
-  padding-bottom: 4px;
-  overflow-x: auto;
-  scrollbar-width: thin;
+  display: contents;
 }
 
-/* An open menu must not be clipped by the scrolling row. */
-.search[data-layout="mobile"] .search-filters:has(details[open]) {
-  flex-wrap: wrap;
-  overflow: visible;
+.search[data-layout="mobile"] .search-sort {
+  gap: var(--space-3);
+  min-height: 36px;
+  margin-left: 0;
+  padding: 0 10px;
+  color: #353535;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.23);
+  border-radius: var(--radius-2);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.search[data-layout="mobile"] .search-sort:hover {
+  text-decoration: none;
+  border-color: #0b663d;
+}
+
+.search[data-layout="mobile"] .search-sort-value {
+  font-weight: 400;
 }
 
 .search-chip {
   display: inline-flex;
-  gap: 6px;
+  gap: var(--space-3);
   align-items: center;
   min-height: 36px;
-  padding: 0 14px;
+  padding: 0 10px;
   color: #353535;
   background: #fff;
-  border: 1px solid #dadce0;
-  border-radius: var(--radius-6);
+  border: 1px solid rgba(0, 0, 0, 0.23);
+  border-radius: var(--radius-2);
   font-family: inherit;
   font-size: 14px;
-  font-weight: 600;
-  line-height: 1;
+  font-weight: 400;
+  line-height: 20px;
   white-space: nowrap;
   list-style: none;
   cursor: pointer;
@@ -937,7 +966,7 @@ button {
 /* Top picks */
 
 .search-picks {
-  margin-top: 28px;
+  margin-top: var(--space-7);
 }
 
 .search-picks h3,
@@ -1005,7 +1034,7 @@ button {
 .search-grid {
   display: grid;
   gap: 16px;
-  margin: 28px 0 0;
+  margin: var(--space-7) 0 0;
   padding: 0;
   list-style: none;
 }

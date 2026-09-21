@@ -9,7 +9,6 @@ import {
   insuranceStats,
   languageStats,
   providers,
-  soonestOpeningDate,
   specialtyOptions,
   specialtyStats,
   styleOptions,
@@ -261,15 +260,20 @@ export function SearchPage({
             patients pay as low as $0 per session.
           </p>
         </div>
+        <div className="search-toolbar">
+          {showFilters ? <FilterBar filters={state.filters} onChange={onFiltersChange} /> : null}
+          <SortControl
+            layout={layout}
+            sortKey={state.sortKey}
+            onSortChange={onSortChange}
+          />
+        </div>
         <ResultsHeader
           layout={layout}
           total={total}
-          sortKey={state.sortKey}
           infoOpen={infoOpen}
           onInfoToggle={() => setInfoOpen((open) => !open)}
-          onSortChange={onSortChange}
         />
-        {showFilters ? <FilterBar filters={state.filters} onChange={onFiltersChange} /> : null}
         {total === 0 ? (
           <EmptyState onClear={() => onFiltersChange(emptyFilters)} />
         ) : (
@@ -498,17 +502,13 @@ export function SearchPage({
 function ResultsHeader({
   layout,
   total,
-  sortKey,
   infoOpen,
   onInfoToggle,
-  onSortChange,
 }: {
   layout: "mobile" | "desktop";
   total: number;
-  sortKey: SortKey;
   infoOpen: boolean;
   onInfoToggle: () => void;
-  onSortChange: (key: SortKey) => void;
 }) {
   const noteId = `best-fit-note-${layout}`;
 
@@ -519,11 +519,7 @@ function ResultsHeader({
           <strong>
             {total} {total === 1 ? "provider" : "providers"}
           </strong>{" "}
-          who best fit your preferences{" "}
-          <strong className="search-radius">
-            within 30 miles
-            <Chevron open={false} />
-          </strong>
+          who best fit your preferences
           <button
             type="button"
             className="search-info"
@@ -542,25 +538,43 @@ function ResultsHeader({
           </p>
         ) : null}
       </div>
-      <label className="search-sort">
-        <span>Sort:</span>
-        <span className="search-control">
-          <select
-            value={sortKey}
-            onChange={(event) => {
-              const next = event.target.value;
-              if (isSortKey(next)) onSortChange(next);
-            }}
-          >
-            {sortOptions.map((option) => (
-              <option key={option.id} value={option.id}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-          <img className="search-chevron" src="/icons/icon-chevron.svg" alt="" width={16} height={16} />
-        </span>
-      </label>
+    </div>
+  );
+}
+
+function SortControl({
+  layout,
+  sortKey,
+  onSortChange,
+}: {
+  layout: "mobile" | "desktop";
+  sortKey: SortKey;
+  onSortChange: (key: SortKey) => void;
+}) {
+  const sortId = `sort-${layout}`;
+  const current = sortOptions.find((option) => option.id === sortKey)?.label ?? "Recommended";
+
+  return (
+    <div className="search-sort">
+      <label htmlFor={sortId}>Sort:</label>
+      <span className="search-sort-value" aria-hidden="true">
+        {current}
+      </span>
+      <Chevron open={false} />
+      <select
+        id={sortId}
+        value={sortKey}
+        onChange={(event) => {
+          const next = event.target.value;
+          if (isSortKey(next)) onSortChange(next);
+        }}
+      >
+        {sortOptions.map((option) => (
+          <option key={option.id} value={option.id}>
+            {option.label}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }
@@ -580,7 +594,7 @@ function FilterBar({
         aria-pressed={filters.availableSoonest}
         onClick={() => onChange({ ...filters, availableSoonest: !filters.availableSoonest })}
       >
-        Available {formatOpeningDay(soonestOpeningDate)}
+        Available soonest
       </button>
       <button
         type="button"

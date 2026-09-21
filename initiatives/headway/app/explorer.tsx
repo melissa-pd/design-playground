@@ -3,6 +3,7 @@
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { insurancePlans } from "./data";
+import { emptyFilters, type Filters, type SortKey } from "./results";
 import { SearchPage, type SearchState } from "./search-page";
 import { isVariantId, isViewportId, variants, type VariantId, type ViewportId } from "./variants";
 
@@ -18,13 +19,14 @@ export function Explorer() {
   const requestedViewport = searchParams.get("viewport");
   const requestedVariant = searchParams.get("variant");
   const viewport: ViewportId = isViewportId(requestedViewport) ? requestedViewport : "both";
-  const variant: VariantId = isVariantId(requestedVariant) ? requestedVariant : "baseline";
+  const variant: VariantId = isVariantId(requestedVariant) ? requestedVariant : "sort";
   const hypothesis = variants.find((item) => item.id === variant)?.hypothesis ?? variants[0].hypothesis;
 
   const [zip, setZip] = useState("98101");
   const [insurance, setInsurance] = useState<string>(insurancePlans[0]);
   const [page, setPage] = useState(1);
-  const [expanded, setExpanded] = useState(false);
+  const [sortKey, setSortKey] = useState<SortKey>("recommended");
+  const [filters, setFilters] = useState<Filters>(emptyFilters);
   const [openFaq, setOpenFaq] = useState<string | null>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef(viewport);
@@ -37,8 +39,8 @@ export function Explorer() {
   const naturalWidth = frames.reduce((sum, frame) => sum + frameWidth[frame], 0) + (frames.length - 1) * 28;
 
   const state: SearchState = useMemo(
-    () => ({ zip, insurance, page, expanded, openFaq }),
-    [zip, insurance, page, expanded, openFaq],
+    () => ({ zip, insurance, page, openFaq, sortKey, filters }),
+    [zip, insurance, page, openFaq, sortKey, filters],
   );
 
   useLayoutEffect(() => {
@@ -69,7 +71,8 @@ export function Explorer() {
 
   function selectVariant(next: VariantId) {
     setPage(1);
-    setExpanded(false);
+    setSortKey("recommended");
+    setFilters(emptyFilters);
     replaceQuery({ variant: next });
   }
 
@@ -127,7 +130,14 @@ export function Explorer() {
                   setPage(1);
                 }}
                 onPageChange={setPage}
-                onExpandedChange={setExpanded}
+                onSortChange={(next) => {
+                  setSortKey(next);
+                  setPage(1);
+                }}
+                onFiltersChange={(next) => {
+                  setFilters(next);
+                  setPage(1);
+                }}
                 onFaqChange={setOpenFaq}
               />
             </DeviceFrame>

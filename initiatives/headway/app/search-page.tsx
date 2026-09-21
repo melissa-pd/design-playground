@@ -3,18 +3,33 @@
 import { useState } from "react";
 import {
   faqs,
+  formatOpeningDay,
   formatStats,
   insurancePlans,
   insuranceStats,
   languageStats,
   providers,
+  soonestOpeningDate,
+  specialtyOptions,
   specialtyStats,
+  styleOptions,
   type Provider,
 } from "./data";
-import type { VariantId } from "./variants";
+import {
+  applyFilters,
+  applySort,
+  emptyFilters,
+  hasActiveFilters,
+  isSortKey,
+  pickReasons,
+  sortOptions,
+  type Filters,
+  type SortKey,
+} from "./results";
+import { variantRank, type VariantId } from "./variants";
 
 const pageSize = 8;
-const shortListSize = 3;
+const pickCount = 3;
 
 const footerColumns = [
   {
@@ -51,8 +66,9 @@ export type SearchState = {
   zip: string;
   insurance: string;
   page: number;
-  expanded: boolean;
   openFaq: string | null;
+  sortKey: SortKey;
+  filters: Filters;
 };
 
 type SearchPageProps = {
@@ -62,8 +78,9 @@ type SearchPageProps = {
   onZipChange: (zip: string) => void;
   onInsuranceChange: (insurance: string) => void;
   onPageChange: (page: number) => void;
-  onExpandedChange: (expanded: boolean) => void;
   onFaqChange: (id: string | null) => void;
+  onSortChange: (key: SortKey) => void;
+  onFiltersChange: (filters: Filters) => void;
 };
 
 export function SearchPage({
@@ -73,24 +90,24 @@ export function SearchPage({
   onZipChange,
   onInsuranceChange,
   onPageChange,
-  onExpandedChange,
   onFaqChange,
+  onSortChange,
+  onFiltersChange,
 }: SearchPageProps) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const directory = variant !== "short-list" || state.expanded;
-  const pageCount = Math.ceil(providers.length / pageSize);
+  const [infoOpen, setInfoOpen] = useState(false);
+  const rank = variantRank(variant);
+  const showFilters = rank >= 1;
+  const showPicks = rank >= 2;
+  const activeFilters = showFilters ? state.filters : emptyFilters;
+  const results = applySort(applyFilters(providers, activeFilters), state.sortKey);
+  const total = results.length;
+  const pageCount = Math.max(1, Math.ceil(total / pageSize));
   const page = Math.min(state.page, pageCount);
   const rangeStart = (page - 1) * pageSize + 1;
-  const rangeEnd = Math.min(page * pageSize, providers.length);
-  const visible = directory
-    ? variant === "short-list"
-      ? providers
-      : providers.slice((page - 1) * pageSize, page * pageSize)
-    : providers.slice(0, shortListSize);
-  const resultsTitle =
-    variant === "short-list" && !state.expanded
-      ? "Three couples therapists to start with"
-      : "Top couples therapists in Washington";
+  const rangeEnd = Math.min(page * pageSize, total);
+  const visible = results.slice((page - 1) * pageSize, page * pageSize);
+  const picks = showPicks ? results.slice(0, pickCount) : [];
 
   function findCare() {
     setMenuOpen(false);
@@ -236,40 +253,48 @@ export function SearchPage({
 
       <section className="search-results" id={`results-${layout}`} aria-labelledby={`results-title-${layout}`}>
         <div className="search-results-intro">
-          <h2 id={`results-title-${layout}`}>{resultsTitle}</h2>
+          <h2 id={`results-title-${layout}`}>Top couples therapists in Washington</h2>
           <p>
             Work through relationship challenges with a couples therapist who understands your
             unique dynamic. Headway connects you with experienced providers across Washington,
             offering affordable sessions with an average savings of 75% through insurance—many
             patients pay as low as $0 per session.
           </p>
-          {variant === "why-this-match" ? (
-            <p>Each card leads with why it fits couples care in Washington.</p>
-          ) : null}
-          {variant === "short-list" && !state.expanded ? (
-            <p>A ranked handful for this search, with the rest of the directory one step away.</p>
-          ) : null}
         </div>
-        <ol className="search-grid">
-          {visible.map((provider, index) => (
-            <ProviderCard
-              key={provider.id}
-              provider={provider}
-              insurance={state.insurance}
-              variant={variant}
-              rank={variant === "short-list" && !state.expanded ? index + 1 : null}
-            />
-          ))}
-        </ol>
-        {variant === "short-list" ? (
-          <button
-            type="button"
-            className="search-quiet"
-            onClick={() => onExpandedChange(!state.expanded)}
-          >
-            {state.expanded ? "Show the short list" : "See more therapists"}
-          </button>
+        <ResultsHeader
+          layout={layout}
+          total={total}
+          sortKey={state.sortKey}
+          infoOpen={infoOpen}
+          onInfoToggle={() => setInfoOpen((open) => !open)}
+          onSortChange={onSortChange}
+        />
+        {showFilters ? <FilterBar filters={state.filters} onChange={onFiltersChange} /> : null}
+        {total === 0 ? (
+          <EmptyState onClear={() => onFiltersChange(emptyFilters)} />
         ) : (
+          <>
+            {picks.length > 0 ? (
+              <TopPicks
+                layout={layout}
+                picks={picks}
+                insurance={state.insurance}
+                filters={activeFilters}
+              />
+            ) : null}
+            {showPicks ? (
+              <h3 className="search-all-title">
+                All {total} {total === 1 ? "provider" : "providers"}
+              </h3>
+            ) : null}
+            <ol className="search-grid">
+              {visible.map((provider) => (
+                <ProviderCard key={provider.id} provider={provider} />
+              ))}
+            </ol>
+          </>
+        )}
+        {total > 0 && pageCount > 1 ? (
           <nav className="search-pager" aria-label="Results pages">
             <div className="search-pager-pages">
               <button
@@ -307,11 +332,10 @@ export function SearchPage({
               </button>
             </div>
             <p className="search-pager-count">
-              {rangeStart} - {rangeEnd} of {providers.length}{" "}
-              <span>available therapists</span>
+              {rangeStart} - {rangeEnd} of {total} <span>available therapists</span>
             </p>
           </nav>
-        )}
+        ) : null}
       </section>
 
       <section className="search-about" aria-labelledby={`about-${layout}`}>
@@ -471,29 +495,245 @@ export function SearchPage({
   );
 }
 
-function ProviderCard({
-  provider,
+function ResultsHeader({
+  layout,
+  total,
+  sortKey,
+  infoOpen,
+  onInfoToggle,
+  onSortChange,
+}: {
+  layout: "mobile" | "desktop";
+  total: number;
+  sortKey: SortKey;
+  infoOpen: boolean;
+  onInfoToggle: () => void;
+  onSortChange: (key: SortKey) => void;
+}) {
+  const noteId = `best-fit-note-${layout}`;
+
+  return (
+    <div className="search-results-bar">
+      <div className="search-count-wrap">
+        <p className="search-count" aria-live="polite">
+          <strong>
+            {total} {total === 1 ? "provider" : "providers"}
+          </strong>{" "}
+          who best fit your preferences{" "}
+          <strong className="search-radius">
+            within 30 miles
+            <Chevron open={false} />
+          </strong>
+          <button
+            type="button"
+            className="search-info"
+            aria-label="How best fit is ranked"
+            aria-expanded={infoOpen}
+            aria-controls={noteId}
+            onClick={onInfoToggle}
+          >
+            <InfoIcon />
+          </button>
+        </p>
+        {infoOpen ? (
+          <p id={noteId} className="search-count-note">
+            Best fit ranks by couples-care focus, your selected insurance, and the soonest opening.
+            Sort reorders within that set.
+          </p>
+        ) : null}
+      </div>
+      <label className="search-sort">
+        <span>Sort:</span>
+        <span className="search-control">
+          <select
+            value={sortKey}
+            onChange={(event) => {
+              const next = event.target.value;
+              if (isSortKey(next)) onSortChange(next);
+            }}
+          >
+            {sortOptions.map((option) => (
+              <option key={option.id} value={option.id}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+          <img className="search-chevron" src="/icons/icon-chevron.svg" alt="" width={16} height={16} />
+        </span>
+      </label>
+    </div>
+  );
+}
+
+function FilterBar({
+  filters,
+  onChange,
+}: {
+  filters: Filters;
+  onChange: (filters: Filters) => void;
+}) {
+  return (
+    <div className="search-filters" role="group" aria-label="Filter providers">
+      <button
+        type="button"
+        className="search-chip"
+        aria-pressed={filters.availableSoonest}
+        onClick={() => onChange({ ...filters, availableSoonest: !filters.availableSoonest })}
+      >
+        Available {formatOpeningDay(soonestOpeningDate)}
+      </button>
+      <button
+        type="button"
+        className="search-chip"
+        aria-pressed={filters.freeConsult}
+        onClick={() => onChange({ ...filters, freeConsult: !filters.freeConsult })}
+      >
+        Free consultation
+      </button>
+      <FilterMenu
+        label="Specialty"
+        options={specialtyOptions}
+        selected={filters.specialties}
+        onChange={(specialties) => onChange({ ...filters, specialties })}
+      />
+      <FilterMenu
+        label="Approach"
+        options={styleOptions}
+        selected={filters.styles}
+        onChange={(styles) => onChange({ ...filters, styles })}
+      />
+      {hasActiveFilters(filters) ? (
+        <button type="button" className="search-chip-clear" onClick={() => onChange(emptyFilters)}>
+          Clear all
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
+function FilterMenu({
+  label,
+  options,
+  selected,
+  onChange,
+}: {
+  label: string;
+  options: string[];
+  selected: string[];
+  onChange: (selected: string[]) => void;
+}) {
+  function toggle(option: string) {
+    onChange(
+      selected.includes(option)
+        ? selected.filter((value) => value !== option)
+        : [...selected, option],
+    );
+  }
+
+  return (
+    <details
+      className="search-chip-menu"
+      name="filters"
+      onKeyDown={(event) => {
+        if (event.key !== "Escape") return;
+        event.currentTarget.open = false;
+        event.currentTarget.querySelector("summary")?.focus();
+      }}
+    >
+      <summary className="search-chip">
+        {label}
+        {selected.length > 0 ? ` (${selected.length})` : ""}
+        <Chevron open={false} />
+      </summary>
+      <fieldset className="search-chip-panel">
+        <legend className="visually-hidden">{label}</legend>
+        {options.map((option) => (
+          <label key={option}>
+            <input
+              type="checkbox"
+              checked={selected.includes(option)}
+              onChange={() => toggle(option)}
+            />
+            {option}
+          </label>
+        ))}
+      </fieldset>
+    </details>
+  );
+}
+
+function EmptyState({ onClear }: { onClear: () => void }) {
+  return (
+    <div className="search-empty" role="status">
+      <p>No providers match those filters. Try removing one.</p>
+      <button type="button" className="search-chip-clear" onClick={onClear}>
+        Clear filters
+      </button>
+    </div>
+  );
+}
+
+function TopPicks({
+  layout,
+  picks,
   insurance,
-  variant,
+  filters,
+}: {
+  layout: "mobile" | "desktop";
+  picks: Provider[];
+  insurance: string;
+  filters: Filters;
+}) {
+  return (
+    <section className="search-picks" aria-labelledby={`picks-title-${layout}`}>
+      <h3 id={`picks-title-${layout}`}>Best matches for your search</h3>
+      <ol className="search-picks-grid">
+        {picks.map((provider, index) => (
+          <PickCard
+            key={provider.id}
+            provider={provider}
+            rank={index + 1}
+            reasons={pickReasons(provider, insurance, filters)}
+          />
+        ))}
+      </ol>
+    </section>
+  );
+}
+
+function PickCard({
+  provider,
   rank,
+  reasons,
 }: {
   provider: Provider;
-  insurance: string;
-  variant: VariantId;
-  rank: number | null;
+  rank: number;
+  reasons: string[];
 }) {
-  const reasons = [
-    "Couples care",
-    "Washington",
-    insurance === "Self-pay" ? "Self-pay welcome" : `Takes ${insurance}`,
-    provider.nextOpening,
-  ];
+  return (
+    <li className="search-pick">
+      <div className="search-pick-top">
+        <div className="search-portrait-wrap">
+          <span className="search-rank">{rank}</span>
+          <img className="search-portrait" src={provider.photo} alt="" width={64} height={64} />
+        </div>
+        <h4>{provider.name}</h4>
+      </div>
+      <ul className="search-reasons" aria-label={`Why ${provider.name} matches`}>
+        {reasons.map((reason) => (
+          <li key={reason}>{reason}</li>
+        ))}
+      </ul>
+      <button type="button">View profile and book</button>
+    </li>
+  );
+}
 
+function ProviderCard({ provider }: { provider: Provider }) {
   return (
     <li className="search-card">
       <div className="search-card-top">
         <div className="search-portrait-wrap">
-          {rank ? <span className="search-rank">{rank}</span> : null}
           <img
             className="search-portrait"
             src={provider.photo}
@@ -509,22 +749,15 @@ function ProviderCard({
         </div>
       </div>
       <div className="search-card-body">
-        {variant === "why-this-match" ? (
-          <ul className="search-reasons" aria-label={`Why ${provider.name} matches`}>
-            {reasons.map((reason) => (
-              <li key={reason}>{reason}</li>
-            ))}
-          </ul>
-        ) : null}
         <p className="search-bio">{provider.bio}</p>
         <ul className="search-meta">
           <li>
             <img src="/icons/icon-spec.svg" alt="" width={18} height={18} />
-            <span>{provider.specialties}</span>
+            <span>{provider.specialties.join(", ")}</span>
           </li>
           <li>
             <img src="/icons/icon-style.svg" alt="" width={18} height={18} />
-            <span>{provider.style}</span>
+            <span>{provider.style.join(", ")}</span>
           </li>
           <li>
             <img src="/icons/icon-ins.svg" alt="" width={18} height={18} />
@@ -535,7 +768,7 @@ function ProviderCard({
       <div className="search-card-foot">
         <div className="search-card-actions">
           <div>
-            <p>{provider.nextOpening}</p>
+            <p>Next opening {formatOpeningDay(provider.nextOpeningDate)}</p>
             {provider.freeConsult ? (
               <p className="search-consult">Offers free consultations</p>
             ) : null}
@@ -578,6 +811,16 @@ function StatList({
         ))}
       </ul>
     </article>
+  );
+}
+
+function InfoIcon() {
+  return (
+    <svg className="search-info-icon" viewBox="0 0 20 20" aria-hidden="true">
+      <circle cx="10" cy="10" r="8.25" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="10" cy="6.5" r="1" fill="currentColor" />
+      <path d="M10 9v5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
   );
 }
 

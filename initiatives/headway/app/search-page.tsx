@@ -289,7 +289,7 @@ function ProviderCard({
         <span className="search-label">Style</span> {provider.style}
       </p>
       <p>Accepts {provider.insuranceCount} insurance carriers</p>
-      <p className="search-opening">Next opening {provider.nextOpening}</p>
+      <p className="search-opening">{provider.nextOpening}</p>
       <button type="button">View profile and book</button>
     </li>
   );

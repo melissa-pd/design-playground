@@ -27,7 +27,11 @@ export function Explorer() {
   const [expanded, setExpanded] = useState(false);
   const [openFaq, setOpenFaq] = useState<string | null>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef(viewport);
+  const variantRef = useRef(variant);
   const [scale, setScale] = useState(1);
+  viewportRef.current = viewport;
+  variantRef.current = variant;
 
   const frames = viewport === "both" ? (["mobile", "desktop"] as const) : ([viewport] as const);
   const naturalWidth = frames.reduce((sum, frame) => sum + frameWidth[frame], 0) + (frames.length - 1) * 28;
@@ -53,9 +57,13 @@ export function Explorer() {
   }, [naturalWidth]);
 
   function replaceQuery(next: { viewport?: ViewportId; variant?: VariantId }) {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("viewport", next.viewport ?? viewport);
-    params.set("variant", next.variant ?? variant);
+    const params = new URLSearchParams(window.location.search);
+    const nextViewport = next.viewport ?? viewportRef.current;
+    const nextVariant = next.variant ?? variantRef.current;
+    viewportRef.current = nextViewport;
+    variantRef.current = nextVariant;
+    params.set("viewport", nextViewport);
+    params.set("variant", nextVariant);
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   }
 
@@ -139,32 +147,13 @@ function DeviceFrame({
   scale: number;
   children: React.ReactNode;
 }) {
-  const frameRef = useRef<HTMLDivElement>(null);
-  const [height, setHeight] = useState(800);
   const width = frameWidth[layout];
-
-  useLayoutEffect(() => {
-    const frame = frameRef.current;
-    if (!frame) return;
-
-    const measure = () => setHeight(frame.offsetHeight);
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(frame);
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <figure className="explorer-slot" style={{ width: width * scale }}>
       <figcaption>{layout === "mobile" ? "Mobile · 390" : "Desktop · 1440"}</figcaption>
-      <div className="explorer-scale" style={{ height: height * scale }}>
-        <div
-          ref={frameRef}
-          className="explorer-frame"
-          style={{ width, transform: `scale(${scale})` }}
-        >
-          {children}
-        </div>
+      <div className="explorer-frame" style={{ width, zoom: scale }}>
+        {children}
       </div>
     </figure>
   );

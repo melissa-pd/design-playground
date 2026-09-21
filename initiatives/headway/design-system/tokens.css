@@ -1,0 +1,26 @@
+:root {
+  --color-primary: rgb(53, 53, 53);
+  --color-secondary: rgba(0, 0, 0, 0);
+  --font-heading: Honey Regular;
+  --font-body: Honey Regular;
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 6px;
+  --space-4: 8px;
+  --space-5: 10px;
+  --space-6: 11px;
+  --space-7: 12px;
+  --space-8: 15px;
+  --space-9: 16px;
+  --space-10: 16.5px;
+  --space-11: 20px;
+  --space-12: 22px;
+  --space-13: 24px;
+  --space-14: 26px;
+  --space-15: 32px;
+  --space-16: 40px;
+  --space-17: 46px;
+  --space-18: 48px;
+  --space-19: 56px;
+  --space-20: 64px;
+}

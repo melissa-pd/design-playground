@@ -10,10 +10,10 @@ This repo is for internal design experiments and initiative exploration. Work he
 - Do not use Git submodules for initiatives.
 - Use a separate GitHub repository only when an initiative needs independent history, permissions, deployment ownership, or release lifecycle.
 
-## Conductor Workflow
+## Cursor Workflow
 
-- Use a new Conductor workspace when an initiative or task should have its own branch, diff, chat, and review path.
-- Use multiple chats in one workspace only when agents need the same current branch and file state.
+- Use a new Cursor branch and chat when an initiative or task should have its own diff, context, and review path.
+- Use multiple chats on one branch only when agents need the same current file state.
 - Keep non-committed collaboration notes in `.context/`.
 - Do not rename the current branch unless the user explicitly requests it.
 

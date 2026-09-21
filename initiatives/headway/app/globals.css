@@ -502,7 +502,6 @@ button {
 .search-results,
 .search-about,
 .search-faq,
-.search-close,
 .search-crumbs,
 .search-footnote {
   padding: 40px 16px;
@@ -511,7 +510,6 @@ button {
 .search[data-layout="desktop"] .search-results,
 .search[data-layout="desktop"] .search-about,
 .search[data-layout="desktop"] .search-faq,
-.search[data-layout="desktop"] .search-close,
 .search[data-layout="desktop"] .search-crumbs,
 .search[data-layout="desktop"] .search-footnote {
   padding-right: 136px;
@@ -981,7 +979,7 @@ button {
   gap: 0;
   padding: 0;
   overflow: hidden;
-  background: #f4f7f2;
+  background: #fef7eb;
 }
 
 .search[data-layout="desktop"] .search-close {

@@ -862,8 +862,11 @@ button {
 .search-mix {
   overflow: hidden;
   background: #fff;
-  border: 1px solid #ebebeb;
   border-radius: 8px;
+}
+
+.search-mix {
+  border: 1px solid #ebebeb;
 }
 
 .search-stat p,

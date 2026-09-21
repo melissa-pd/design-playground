@@ -46,6 +46,20 @@ const rawFixture = {
         lineHeight: "1.38",
       },
       {
+        context: "heading-1",
+        family: "PostGrotesk",
+        size: "22px (1.375rem)",
+        weight: 400,
+        lineHeight: "1.75",
+      },
+      {
+        context: "heading-1",
+        family: "PostGrotesk",
+        size: "18px (1.125rem)",
+        weight: 500,
+        lineHeight: "1.33",
+      },
+      {
         context: "caption",
         family: "PostGrotesk",
         size: "14px (0.875rem)",
@@ -84,7 +98,7 @@ test("normalizes Dembrandt object-shaped CSS output without dropping values", ()
   });
   assert.equal(normalized.typography.headingFont, "Honey Regular");
   assert.equal(normalized.typography.bodyFont, "PostGrotesk");
-  assert.equal(normalized.typography.styles.length, 3);
+  assert.equal(normalized.typography.styles.length, 5);
   assert.deepEqual(normalized.spacing.scale, ["4px", "8px"]);
   assert.deepEqual(normalized.radius.scale, ["4px", "9999px"]);
   assert.deepEqual(normalized.shadows.scale, [

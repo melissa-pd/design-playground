@@ -60,6 +60,21 @@ function dominantFamily(styles, contexts) {
   return [...counts.entries()].sort((first, second) => second[1] - first[1])[0]?.[0];
 }
 
+function firstFamily(styles, contexts) {
+  for (const style of styles) {
+    const record = asRecord(style);
+    const family = record?.family;
+    const context = String(record?.context ?? "").toLowerCase();
+    if (
+      isNonEmptyString(family) &&
+      contexts.some((item) => context.includes(item))
+    ) {
+      return family;
+    }
+  }
+  return undefined;
+}
+
 function normalizeTypographyStyles(values) {
   if (!Array.isArray(values)) return [];
 
@@ -109,7 +124,7 @@ export function normalizeExtraction(raw, sourceUrl) {
   const headingFont = firstString(
     typography.headingFont,
     typography.heading,
-    dominantFamily(typographyStyles, ["heading", "display", "hero"]),
+    firstFamily(typographyStyles, ["heading", "display", "hero"]),
   );
   const bodyFont = firstString(
     typography.bodyFont,

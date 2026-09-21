@@ -865,10 +865,6 @@ button {
   border-radius: 8px;
 }
 
-.search-mix {
-  border: 1px solid #ebebeb;
-}
-
 .search-stat p,
 .search-mix h3 {
   margin: 16px 16px 0;

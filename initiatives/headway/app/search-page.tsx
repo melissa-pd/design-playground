@@ -34,15 +34,6 @@ type SearchPageProps = {
   onFaqChange: (id: string | null) => void;
 };
 
-const portraits: Record<string, { hair: string; skin: string; shirt: string; bob?: boolean }> = {
-  "elena-voss": { hair: "#2c211c", skin: "#e8c4a8", shirt: "#f3efe8" },
-  "marcus-hale": { hair: "#1a1a1a", skin: "#c48a62", shirt: "#d7e4f2" },
-  "priya-nandakumar": { hair: "#1c140f", skin: "#c9845a", shirt: "#efe2d4", bob: true },
-  "jonah-ellis": { hair: "#6b4a32", skin: "#f0d0b4", shirt: "#e7efe4" },
-  "camille-ortiz": { hair: "#3b2418", skin: "#e2b08a", shirt: "#f6e7ea", bob: true },
-  "andre-blake": { hair: "#24180f", skin: "#8d5a3c", shirt: "#e4e7ea" },
-};
-
 export function SearchPage({
   layout,
   variant,
@@ -312,8 +303,8 @@ export function SearchPage({
         </ol>
       </nav>
       <p className="search-footnote">
-        Cost may vary based on your location, age, and insurance coverage. Providers in this
-        prototype are fictional, and nothing here checks coverage or books a visit.
+        Cost may vary based on your location, age, and insurance coverage. Nothing here checks
+        coverage or books a visit.
       </p>
 
       <footer className="search-footer">
@@ -377,60 +368,54 @@ function ProviderCard({
       <div className="search-card-top">
         <div className="search-portrait-wrap">
           {rank ? <span className="search-rank">{rank}</span> : null}
-          <Portrait id={provider.id} />
+          <img
+            className="search-portrait"
+            src={provider.photo}
+            alt=""
+            width={120}
+            height={120}
+          />
         </div>
-        <div>
+        <div className="search-identity">
           <h3>{provider.name}</h3>
           <p>Therapist</p>
           <p>Virtual • Washington</p>
         </div>
       </div>
-      {variant === "why-this-match" ? (
-        <ul className="search-reasons" aria-label={`Why ${provider.name} matches`}>
-          {reasons.map((reason) => (
-            <li key={reason}>{reason}</li>
-          ))}
+      <div className="search-card-body">
+        {variant === "why-this-match" ? (
+          <ul className="search-reasons" aria-label={`Why ${provider.name} matches`}>
+            {reasons.map((reason) => (
+              <li key={reason}>{reason}</li>
+            ))}
+          </ul>
+        ) : null}
+        <p className="search-bio">{provider.bio}</p>
+        <ul className="search-meta">
+          <li>
+            <img src="/icons/icon-spec.svg" alt="" width={18} height={18} />
+            <span>{provider.specialties}</span>
+          </li>
+          <li>
+            <img src="/icons/icon-style.svg" alt="" width={18} height={18} />
+            <span>{provider.style}</span>
+          </li>
+          <li>
+            <img src="/icons/icon-ins.svg" alt="" width={18} height={18} />
+            <span>Accepts {provider.insuranceCount} insurance carriers</span>
+          </li>
         </ul>
-      ) : null}
-      <p className="search-bio">{provider.bio}</p>
-      <ul className="search-meta">
-        <li>
-          <img src="/icons/icon-spec.svg" alt="" width={18} height={18} />
-          <span>{provider.specialties}</span>
-        </li>
-        <li>
-          <img src="/icons/icon-style.svg" alt="" width={18} height={18} />
-          <span>{provider.style}</span>
-        </li>
-        <li>
-          <img src="/icons/icon-ins.svg" alt="" width={18} height={18} />
-          <span>Accepts {provider.insuranceCount} insurance carriers</span>
-        </li>
-      </ul>
+      </div>
       <div className="search-card-foot">
-        <p>{provider.nextOpening}</p>
-        <button type="button">View profile and book</button>
+        <div className="search-card-actions">
+          <div>
+            <p>{provider.nextOpening}</p>
+            {provider.freeConsult ? <p>Offers free consultations</p> : null}
+          </div>
+          <button type="button">View profile and book</button>
+        </div>
       </div>
     </li>
-  );
-}
-
-function Portrait({ id }: { id: string }) {
-  const look = portraits[id] ?? { hair: "#333", skin: "#e7c2a8", shirt: "#eee" };
-  return (
-    <svg className="search-portrait" viewBox="0 0 120 120" aria-hidden="true">
-      <circle cx="60" cy="60" r="60" fill="#d9e6dc" />
-      <ellipse cx="60" cy="118" rx="46" ry="36" fill={look.shirt} />
-      <circle cx="60" cy="58" r="28" fill={look.skin} />
-      {look.bob ? (
-        <path d="M32 58c2-28 16-40 28-40s26 12 28 40c-6 8-14 6-28 6s-22 2-28-6z" fill={look.hair} />
-      ) : (
-        <path d="M34 62c0-30 12-46 26-46s26 16 26 46c-4-10-12-14-26-14s-22 4-26 14z" fill={look.hair} />
-      )}
-      <circle cx="50" cy="58" r="2" fill="#3a2a24" />
-      <circle cx="70" cy="58" r="2" fill="#3a2a24" />
-      <path d="M54 70c4 4 8 4 12 0" fill="none" stroke="#a8745c" strokeWidth="1.6" strokeLinecap="round" />
-    </svg>
   );
 }
 

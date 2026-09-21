@@ -1,6 +1,6 @@
 # Headway search page explorer
 
-A speculative prototype of Headway's couples search page. It is not affiliated with Headway and it is not a reproduction of their product. Therapist names, portraits, bios, and availability are fictional.
+A speculative prototype of Headway's couples search page. It is not affiliated with Headway and it does not book visits. Provider cards use the names, photos, and copy from the Figma frame.
 
 The page follows the Figma frame `1440w default`: a Washington couples search with zip, insurance, provider cards, local proof, and a short FAQ. An explorer rail switches viewport and variant.
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   faqs,
   formatStats,
@@ -75,6 +76,7 @@ export function SearchPage({
   onExpandedChange,
   onFaqChange,
 }: SearchPageProps) {
+  const [menuOpen, setMenuOpen] = useState(false);
   const directory = variant !== "short-list" || state.expanded;
   const pageCount = Math.ceil(providers.length / pageSize);
   const page = Math.min(state.page, pageCount);
@@ -91,10 +93,19 @@ export function SearchPage({
       : "Top couples therapists in Washington";
 
   function findCare() {
+    setMenuOpen(false);
     document.getElementById(`results-${layout}`)?.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
+  }
+
+  function focusSearch() {
+    const input = document.querySelector<HTMLInputElement>(
+      `#search-form-${layout} input`,
+    );
+    input?.scrollIntoView({ behavior: "smooth", block: "center" });
+    input?.focus();
   }
 
   return (
@@ -103,8 +114,30 @@ export function SearchPage({
         <a className="search-logo" href={`#hero-${layout}`}>
           <img src="/logo.png" alt="Headway" width={160} height={32} />
         </a>
+        <div className="search-header-tools">
+          <button
+            type="button"
+            className="search-icon-button"
+            aria-label="Search"
+            onClick={focusSearch}
+          >
+            <img src="/icons/icon-search.svg" alt="" width={24} height={24} />
+          </button>
+          <button
+            type="button"
+            className="search-icon-button"
+            aria-label="Menu"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            <img src="/icons/icon-menu.svg" alt="" width={24} height={24} />
+          </button>
+        </div>
         <div className="search-header-actions">
-          <nav className="search-nav" aria-label="Main">
+          <nav
+            className={menuOpen ? "search-nav is-open" : "search-nav"}
+            aria-label="Main"
+          >
             <button type="button" onClick={findCare}>
               Search providers
             </button>

@@ -1,0 +1,82 @@
+import { formatOpeningDay, soonestOpeningDate, type Provider } from "./data";
+
+export const sortOptions = [
+  { id: "recommended", label: "Recommended" },
+  { id: "soonest", label: "Soonest availability" },
+  { id: "free-consult", label: "Free consultation first" },
+  { id: "most-carriers", label: "Most insurance carriers" },
+] as const;
+
+export type SortKey = (typeof sortOptions)[number]["id"];
+
+export function isSortKey(value: string): value is SortKey {
+  return sortOptions.some((option) => option.id === value);
+}
+
+export type Filters = {
+  availableSoonest: boolean;
+  freeConsult: boolean;
+  specialties: string[];
+  styles: string[];
+};
+
+export const emptyFilters: Filters = {
+  availableSoonest: false,
+  freeConsult: false,
+  specialties: [],
+  styles: [],
+};
+
+export function hasActiveFilters(filters: Filters): boolean {
+  return (
+    filters.availableSoonest ||
+    filters.freeConsult ||
+    filters.specialties.length > 0 ||
+    filters.styles.length > 0
+  );
+}
+
+// OR within a group, AND across groups.
+export function applyFilters(list: Provider[], filters: Filters): Provider[] {
+  return list.filter((provider) => {
+    if (filters.availableSoonest && provider.nextOpeningDate !== soonestOpeningDate) return false;
+    if (filters.freeConsult && !provider.freeConsult) return false;
+    if (
+      filters.specialties.length > 0 &&
+      !filters.specialties.some((value) => provider.specialties.includes(value))
+    ) {
+      return false;
+    }
+    if (filters.styles.length > 0 && !filters.styles.some((value) => provider.style.includes(value))) {
+      return false;
+    }
+    return true;
+  });
+}
+
+// Stable sort, so ties keep the recommended (data) order.
+export function applySort(list: Provider[], key: SortKey): Provider[] {
+  const sorted = [...list];
+  switch (key) {
+    case "soonest":
+      return sorted.sort((a, b) => a.nextOpeningDate.localeCompare(b.nextOpeningDate));
+    case "free-consult":
+      return sorted.sort((a, b) => Number(Boolean(b.freeConsult)) - Number(Boolean(a.freeConsult)));
+    case "most-carriers":
+      return sorted.sort((a, b) => b.insuranceCount - a.insuranceCount);
+    default:
+      return sorted;
+  }
+}
+
+// The filters someone chose come first, so their own choices show on the pill.
+export function pickReasons(provider: Provider, insurance: string, filters: Filters): string[] {
+  const reasons = [
+    ...filters.specialties.filter((value) => provider.specialties.includes(value)),
+    ...filters.styles.filter((value) => provider.style.includes(value)),
+    insurance === "Self-pay" ? "Self-pay welcome" : `Takes ${insurance}`,
+  ];
+  if (provider.freeConsult) reasons.push("Free consultation");
+  reasons.push(`Opening ${formatOpeningDay(provider.nextOpeningDate)}`);
+  return reasons.slice(0, 3);
+}

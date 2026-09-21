@@ -29,3 +29,14 @@ This repo is for internal design experiments and initiative exploration. Work he
 - Keep `.claude/skills/` symlinks aligned with `.agents/skills/` when adding or renaming skills.
 - If skills should apply across all repositories on this machine, use `~/.agents/skills/` instead of copying them into every project.
 - If skills need to be distributed to other people as an installable package, use a plugin instead of Git submodules.
+
+## Extract Design System
+
+When extracting design tokens from a public website, prefer the project MCP server `extract-design-system` if it is connected:
+
+- `extract_design_system` — fetch a public URL and write starter token files
+- `init_design_system` — regenerate token files from the last cached extraction
+- `get_tokens` — read `design-system/tokens.json` without re-fetching
+- `audit_design_system` — scan source files for hardcoded values that already have tokens
+
+If MCP is not connected, follow `.agents/skills/extract-design-system` and run `npx extract-design-system`. Ask before applying extracted tokens to existing app styles or config.

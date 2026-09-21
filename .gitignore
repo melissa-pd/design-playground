@@ -6,6 +6,11 @@
 /claude-marketplace/
 /bencium-claude-code-design-skill/
 /ui-ux-pro-max-skill/
+/extract-design-system/
+
+# Runtime cache from the extract-design-system skill. Generated starter tokens
+# live in design-system/ and can be committed per initiative if wanted.
+.extract-design-system/
 
 node_modules/
 .DS_Store

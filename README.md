@@ -5,9 +5,9 @@ For the recommended Conductor workflow, initiative structure, and guidance on wh
 
 ## Agent skills
 
-Seventeen skills live in `.agents/skills/`. Claude Code only discovers project skills under `.claude/skills/`, so that directory holds a symlink to each one. Both directories are committed — clone the repo and every skill works, no setup and no global install required.
+Eighteen skills live in `.agents/skills/`. Claude Code only discovers project skills under `.claude/skills/`, so that directory holds a symlink to each one. Both directories are committed — clone the repo and every skill works, no setup and no global install required.
 
-**Design** — `ui-ux-pro-max`, `bencium-controlled-ux-designer`, `bencium-innovative-ux-designer`, `web-design-guidelines`
+**Design** — `ui-ux-pro-max`, `bencium-controlled-ux-designer`, `bencium-innovative-ux-designer`, `web-design-guidelines`, `extract-design-system`
 
 **Accessibility** — `accessibility-audit`, `accessibility-scan`, `accessibility-inspect`, `accessibility-fix`, `accessibility-diff`
 
@@ -28,7 +28,7 @@ ln -s ../../.agents/skills/<name> .claude/skills/<name>  # makes Claude Code fin
 
 ### Sources
 
-The nine Vercel skills are managed by the `skills` CLI and pinned in `skills-lock.json`. The other eight were vendored by hand, all MIT:
+The nine Vercel skills plus [`extract-design-system`](https://github.com/arvindrk/extract-design-system) are managed by the `skills` CLI and pinned in `skills-lock.json`. The other eight were vendored by hand, all MIT:
 
 | Skill | Source | Commit |
 | --- | --- | --- |
@@ -38,4 +38,17 @@ The nine Vercel skills are managed by the `skills` CLI and pinned in `skills-loc
 
 The bencium and accesslint repos declare MIT in their README rather than shipping a `LICENSE` file. The bencium skills were flattened out of the upstream `skills/<name>/` nesting so they load under a plain name.
 
-`vercel-optimize`, `deploy-to-vercel`, and `vercel-cli-with-tokens` need the Vercel CLI (`npm i -g vercel`). The `accessibility-*` skills fetch their engine at run time via `npx @accesslint/…`, so they need network access and a page to point at. The rest need nothing.
+`vercel-optimize`, `deploy-to-vercel`, and `vercel-cli-with-tokens` need the Vercel CLI (`npm i -g vercel`). The `accessibility-*` skills fetch their engine at run time via `npx @accesslint/…`, so they need network access and a page to point at. `extract-design-system` fetches a public website at run time and needs Chromium (`npx playwright install chromium`). The rest need nothing.
+
+## MCP
+
+`.cursor/mcp.json` (Cursor) and `.mcp.json` (Claude Code) both start the extract-design-system MCP server with `npx -y --package=extract-design-system extract-design-system-mcp`. Keep those two files in sync. After cloning, restart Cursor or Claude Code so the tools appear.
+
+| Tool | Use it to |
+| --- | --- |
+| `extract_design_system` | Fetch a public URL and write starter token files |
+| `init_design_system` | Regenerate token files from the last cached extraction |
+| `get_tokens` | Read `design-system/tokens.json` without re-fetching |
+| `audit_design_system` | Scan source files for hardcoded values that already have tokens |
+
+Agents should prefer these tools when they are connected, and fall back to the `extract-design-system` skill CLI if they are not. The MCP server writes into the project working directory, same as the CLI.

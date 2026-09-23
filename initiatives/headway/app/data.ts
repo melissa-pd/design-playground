@@ -9,8 +9,9 @@ export const insurancePlans = [
 export type InsurancePlan = (typeof insurancePlans)[number];
 
 export type OpeningDate =
-  | "2026-09-21"
   | "2026-09-22"
+  | "2026-09-23"
+  | "2026-09-24"
   | "2026-09-28"
   | "2026-09-29"
   | "2026-09-30";
@@ -119,7 +120,7 @@ export const providers: Provider[] = [
     specialties: ["Relationship issues", "ADD/ADHD", "Anger management", "Anxiety", "Depression"],
     style: ["Affirming", "Participatory", "Warm"],
     insuranceCount: 7,
-    nextOpeningDate: "2026-09-21",
+    nextOpeningDate: "2026-09-23",
   },
   {
     id: "lashundra-vines",
@@ -129,7 +130,7 @@ export const providers: Provider[] = [
     specialties: ["Relationship issues", "ADD/ADHD", "Anger management", "Anxiety", "Bipolar disorder"],
     style: ["Empowering", "Open-minded", "Warm"],
     insuranceCount: 10,
-    nextOpeningDate: "2026-09-21",
+    nextOpeningDate: "2026-09-24",
   },
 ];
 
@@ -149,9 +150,8 @@ export const specialtyOptions = uniqueSorted(providers.flatMap((provider) => pro
 
 export const styleOptions = uniqueSorted(providers.flatMap((provider) => provider.style));
 
-export const soonestOpeningDate: OpeningDate = providers
-  .map((provider) => provider.nextOpeningDate)
-  .sort()[0];
+// The prototype is anchored to Tuesday 9/22, so this week runs through Sunday.
+export const thisWeekEnds = "2026-09-27";
 
 export const faqs = [
   {

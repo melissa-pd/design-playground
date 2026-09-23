@@ -1,4 +1,4 @@
-import { formatOpeningDay, soonestOpeningDate, type Provider } from "./data";
+import { formatOpeningDay, thisWeekEnds, type Provider } from "./data";
 
 export const sortOptions = [
   { id: "recommended", label: "Recommended" },
@@ -14,14 +14,14 @@ export function isSortKey(value: string): value is SortKey {
 }
 
 export type Filters = {
-  availableSoonest: boolean;
+  availableThisWeek: boolean;
   freeConsult: boolean;
   specialties: string[];
   styles: string[];
 };
 
 export const emptyFilters: Filters = {
-  availableSoonest: false,
+  availableThisWeek: false,
   freeConsult: false,
   specialties: [],
   styles: [],
@@ -29,7 +29,7 @@ export const emptyFilters: Filters = {
 
 export function hasActiveFilters(filters: Filters): boolean {
   return (
-    filters.availableSoonest ||
+    filters.availableThisWeek ||
     filters.freeConsult ||
     filters.specialties.length > 0 ||
     filters.styles.length > 0
@@ -39,7 +39,7 @@ export function hasActiveFilters(filters: Filters): boolean {
 // OR within a group, AND across groups.
 export function applyFilters(list: Provider[], filters: Filters): Provider[] {
   return list.filter((provider) => {
-    if (filters.availableSoonest && provider.nextOpeningDate !== soonestOpeningDate) return false;
+    if (filters.availableThisWeek && provider.nextOpeningDate > thisWeekEnds) return false;
     if (filters.freeConsult && !provider.freeConsult) return false;
     if (
       filters.specialties.length > 0 &&

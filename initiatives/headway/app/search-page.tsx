@@ -585,10 +585,10 @@ function FilterBar({
       <button
         type="button"
         className="search-chip"
-        aria-pressed={filters.availableSoonest}
-        onClick={() => onChange({ ...filters, availableSoonest: !filters.availableSoonest })}
+        aria-pressed={filters.availableThisWeek}
+        onClick={() => onChange({ ...filters, availableThisWeek: !filters.availableThisWeek })}
       >
-        Available soonest
+        Available this week
       </button>
       <button
         type="button"

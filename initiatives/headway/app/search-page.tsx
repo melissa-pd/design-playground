@@ -107,6 +107,9 @@ export function SearchPage({
   const rangeEnd = Math.min(page * pageSize, total);
   const visible = results.slice((page - 1) * pageSize, page * pageSize);
   const picks = showPicks ? results.slice(0, pickCount) : [];
+  const sortControl = (
+    <SortControl layout={layout} sortKey={state.sortKey} onSortChange={onSortChange} />
+  );
 
   function findCare() {
     setMenuOpen(false);
@@ -260,20 +263,20 @@ export function SearchPage({
             patients pay as low as $0 per session.
           </p>
         </div>
-        <div className="search-toolbar">
-          {showFilters ? <FilterBar filters={state.filters} onChange={onFiltersChange} /> : null}
-          <SortControl
-            layout={layout}
-            sortKey={state.sortKey}
-            onSortChange={onSortChange}
-          />
-        </div>
+        {showFilters || layout === "mobile" ? (
+          <div className="search-toolbar">
+            {showFilters ? <FilterBar filters={state.filters} onChange={onFiltersChange} /> : null}
+            {layout === "mobile" ? sortControl : null}
+          </div>
+        ) : null}
         <ResultsHeader
           layout={layout}
           total={total}
           infoOpen={infoOpen}
           onInfoToggle={() => setInfoOpen((open) => !open)}
-        />
+        >
+          {layout === "desktop" ? sortControl : null}
+        </ResultsHeader>
         {total === 0 ? (
           <EmptyState onClear={() => onFiltersChange(emptyFilters)} />
         ) : (
@@ -504,11 +507,13 @@ function ResultsHeader({
   total,
   infoOpen,
   onInfoToggle,
+  children,
 }: {
   layout: "mobile" | "desktop";
   total: number;
   infoOpen: boolean;
   onInfoToggle: () => void;
+  children?: React.ReactNode;
 }) {
   const noteId = `best-fit-note-${layout}`;
 
@@ -538,6 +543,7 @@ function ResultsHeader({
           </p>
         ) : null}
       </div>
+      {children}
     </div>
   );
 }

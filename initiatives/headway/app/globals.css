@@ -704,7 +704,15 @@ button {
 }
 
 .search-results-bar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-9);
   margin-top: var(--space-15);
+}
+
+.search-count-wrap {
+  min-width: 0;
 }
 
 .search-count {
@@ -753,7 +761,6 @@ button {
   flex: none;
   gap: var(--space-2);
   align-items: center;
-  min-height: 40px;
   margin-left: auto;
   color: #0b663d;
   font-size: 15px;

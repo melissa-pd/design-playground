@@ -101,12 +101,13 @@ export function SearchPage({
   const activeFilters = showFilters ? state.filters : emptyFilters;
   const results = applySort(applyFilters(providers, activeFilters), state.sortKey);
   const total = results.length;
-  const pageCount = Math.max(1, Math.ceil(total / pageSize));
+  const picks = showPicks ? results.slice(0, pickCount) : [];
+  const listed = results.slice(picks.length);
+  const pageCount = Math.max(1, Math.ceil(listed.length / pageSize));
   const page = Math.min(state.page, pageCount);
   const rangeStart = (page - 1) * pageSize + 1;
-  const rangeEnd = Math.min(page * pageSize, total);
-  const visible = results.slice((page - 1) * pageSize, page * pageSize);
-  const picks = showPicks ? results.slice(0, pickCount) : [];
+  const rangeEnd = Math.min(page * pageSize, listed.length);
+  const visible = listed.slice((page - 1) * pageSize, page * pageSize);
   const sortControl = (
     <SortControl layout={layout} sortKey={state.sortKey} onSortChange={onSortChange} />
   );
@@ -269,6 +270,14 @@ export function SearchPage({
             {layout === "mobile" ? sortControl : null}
           </div>
         ) : null}
+        {picks.length > 0 ? (
+          <TopPicks
+            layout={layout}
+            picks={picks}
+            insurance={state.insurance}
+            filters={activeFilters}
+          />
+        ) : null}
         <ResultsHeader
           layout={layout}
           total={total}
@@ -277,31 +286,15 @@ export function SearchPage({
         >
           {layout === "desktop" ? sortControl : null}
         </ResultsHeader>
-        {total === 0 ? (
-          <EmptyState onClear={() => onFiltersChange(emptyFilters)} />
-        ) : (
-          <>
-            {picks.length > 0 ? (
-              <TopPicks
-                layout={layout}
-                picks={picks}
-                insurance={state.insurance}
-                filters={activeFilters}
-              />
-            ) : null}
-            {showPicks ? (
-              <h3 className="search-all-title">
-                All {total} {total === 1 ? "provider" : "providers"}
-              </h3>
-            ) : null}
-            <ol className="search-grid">
-              {visible.map((provider) => (
-                <ProviderCard key={provider.id} provider={provider} />
-              ))}
-            </ol>
-          </>
-        )}
-        {total > 0 && pageCount > 1 ? (
+        {total === 0 ? <EmptyState onClear={() => onFiltersChange(emptyFilters)} /> : null}
+        {listed.length > 0 ? (
+          <ol className="search-grid">
+            {visible.map((provider) => (
+              <ProviderCard key={provider.id} provider={provider} />
+            ))}
+          </ol>
+        ) : null}
+        {pageCount > 1 ? (
           <nav className="search-pager" aria-label="Results pages">
             <div className="search-pager-pages">
               <button
@@ -339,7 +332,7 @@ export function SearchPage({
               </button>
             </div>
             <p className="search-pager-count">
-              {rangeStart} - {rangeEnd} of {total} <span>available therapists</span>
+              {rangeStart} - {rangeEnd} of {listed.length} <span>available therapists</span>
             </p>
           </nav>
         ) : null}
@@ -711,11 +704,10 @@ function TopPicks({
         Your top {picks.length === 1 ? "match" : `${picks.length} matches`}
       </h3>
       <ol className="search-picks-grid">
-        {picks.map((provider, index) => (
+        {picks.map((provider) => (
           <PickCard
             key={provider.id}
             provider={provider}
-            rank={index + 1}
             why={matchSentence(provider, insurance, filters)}
           />
         ))}
@@ -724,19 +716,10 @@ function TopPicks({
   );
 }
 
-function PickCard({
-  provider,
-  rank,
-  why,
-}: {
-  provider: Provider;
-  rank: number;
-  why: string;
-}) {
+function PickCard({ provider, why }: { provider: Provider; why: string }) {
   return (
     <li className="search-pick">
       <div className="search-portrait-wrap">
-        <span className="search-rank">{rank}</span>
         <img className="search-portrait" src={provider.photo} alt="" width={80} height={80} />
       </div>
       <div className="search-pick-identity">

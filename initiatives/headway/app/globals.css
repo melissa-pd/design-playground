@@ -708,7 +708,11 @@ button {
   align-items: baseline;
   justify-content: space-between;
   gap: var(--space-9);
-  margin-top: var(--space-15);
+  margin-top: var(--space-13);
+}
+
+.search-results-bar + .search-grid {
+  margin-top: var(--space-9);
 }
 
 .search-count-wrap {
@@ -972,19 +976,19 @@ button {
 
 /* Top picks */
 
-/* The hero gradient, flipped top to bottom. */
+/* Full-bleed band carrying the hero gradient, flipped top to bottom. */
 .search-picks {
-  margin-top: var(--space-13);
+  margin: var(--space-13) -16px 0;
   padding: var(--space-13) var(--space-9) var(--space-15);
   background:
     radial-gradient(ellipse at 50% 5%, rgba(200, 215, 95, 0.22), transparent 42%),
     radial-gradient(ellipse at 82% 22%, rgba(195, 210, 85, 0.2), transparent 36%),
     linear-gradient(0deg, #dbe9f9 0%, #e5ecf7 30%, #e7f0f4 52%, #f7fafc 78%, #fff 100%);
-  border-radius: 12px;
 }
 
 .search[data-layout="desktop"] .search-picks {
-  padding: var(--space-15) var(--space-15) var(--space-16);
+  margin: var(--space-15) -136px 0;
+  padding: var(--space-15) 136px var(--space-16);
 }
 
 .search-picks-title {
@@ -1002,21 +1006,12 @@ button {
   color: #e9a87c;
 }
 
-.search-picks h3,
-.search-all-title {
+.search-picks h3 {
   margin: 0;
   font-family: var(--font-heading-stack);
   font-size: 22px;
   font-weight: 400;
   line-height: 28px;
-}
-
-.search-all-title {
-  margin-top: 32px;
-}
-
-.search-all-title + .search-grid {
-  margin-top: 12px;
 }
 
 .search-picks-grid {
@@ -1174,22 +1169,6 @@ button {
 .search[data-layout="desktop"] .search-portrait {
   width: 120px;
   height: 120px;
-}
-
-.search-rank {
-  position: absolute;
-  top: -4px;
-  left: -4px;
-  z-index: 1;
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  color: #fff;
-  background: #0b663d;
-  border-radius: 50%;
-  font-size: 13px;
-  font-weight: 700;
 }
 
 .search-identity p:first-of-type {

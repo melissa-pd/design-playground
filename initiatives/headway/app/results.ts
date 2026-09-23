@@ -74,17 +74,10 @@ function joinList(items: string[]): string {
   return `${items.slice(0, -1).join(", ")}, and ${items[items.length - 1]}`;
 }
 
-// One sentence for the pick card, built from the live search rather than
-// from anything written about the provider.
-export function matchSentence(provider: Provider, insurance: string, filters: Filters): string {
-  const matched = [
-    ...filters.specialties.filter((value) => provider.specialties.includes(value)),
-    ...filters.styles.filter((value) => provider.style.includes(value)),
-  ];
-  const lead =
-    matched.length > 0
-      ? `Matches your ${joinList(matched)} ${matched.length === 1 ? "filter" : "filters"}`
-      : "Works with couples across Washington";
+// One sentence for the pick card. The picks stand apart from the filter
+// bar, so this reads off the search and the provider only.
+export function matchSentence(provider: Provider, insurance: string): string {
+  const lead = "Works with couples across Washington";
   const details = [
     insurance === "Self-pay" ? "welcomes self-pay" : `takes ${insurance}`,
     `opens ${formatOpeningDay(provider.nextOpeningDate)}`,

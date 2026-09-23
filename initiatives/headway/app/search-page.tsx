@@ -99,14 +99,14 @@ export function SearchPage({
   const showFilters = rank >= 1;
   const showPicks = rank >= 2;
   const activeFilters = showFilters ? state.filters : emptyFilters;
-  const results = applySort(applyFilters(providers, activeFilters), state.sortKey);
-  const total = results.length;
-  const picks = showPicks ? results.slice(0, pickCount) : [];
-  const listed = results.slice(picks.length);
-  const pageCount = Math.max(1, Math.ceil(listed.length / pageSize));
+  const picks = showPicks ? providers.slice(0, pickCount) : [];
+  const pool = showPicks ? providers.slice(pickCount) : providers;
+  const listed = applySort(applyFilters(pool, activeFilters), state.sortKey);
+  const total = listed.length;
+  const pageCount = Math.max(1, Math.ceil(total / pageSize));
   const page = Math.min(state.page, pageCount);
   const rangeStart = (page - 1) * pageSize + 1;
-  const rangeEnd = Math.min(page * pageSize, listed.length);
+  const rangeEnd = Math.min(page * pageSize, total);
   const visible = listed.slice((page - 1) * pageSize, page * pageSize);
   const sortControl = (
     <SortControl layout={layout} sortKey={state.sortKey} onSortChange={onSortChange} />
@@ -265,12 +265,7 @@ export function SearchPage({
           </p>
         </div>
         {picks.length > 0 ? (
-          <TopPicks
-            layout={layout}
-            picks={picks}
-            insurance={state.insurance}
-            filters={activeFilters}
-          />
+          <TopPicks layout={layout} picks={picks} insurance={state.insurance} />
         ) : null}
         {showFilters || layout === "mobile" ? (
           <div className="search-toolbar">
@@ -278,18 +273,16 @@ export function SearchPage({
             {layout === "mobile" ? sortControl : null}
           </div>
         ) : null}
-        {listed.length > 0 || total === 0 ? (
-          <ResultsHeader
-            layout={layout}
-            total={listed.length}
-            infoOpen={infoOpen}
-            onInfoToggle={() => setInfoOpen((open) => !open)}
-          >
-            {layout === "desktop" ? sortControl : null}
-          </ResultsHeader>
-        ) : null}
+        <ResultsHeader
+          layout={layout}
+          total={total}
+          infoOpen={infoOpen}
+          onInfoToggle={() => setInfoOpen((open) => !open)}
+        >
+          {layout === "desktop" ? sortControl : null}
+        </ResultsHeader>
         {total === 0 ? <EmptyState onClear={() => onFiltersChange(emptyFilters)} /> : null}
-        {listed.length > 0 ? (
+        {total > 0 ? (
           <ol className="search-grid">
             {visible.map((provider) => (
               <ProviderCard key={provider.id} provider={provider} />
@@ -334,7 +327,7 @@ export function SearchPage({
               </button>
             </div>
             <p className="search-pager-count">
-              {rangeStart} - {rangeEnd} of {listed.length} <span>available therapists</span>
+              {rangeStart} - {rangeEnd} of {total} <span>available therapists</span>
             </p>
           </nav>
         ) : null}
@@ -692,12 +685,10 @@ function TopPicks({
   layout,
   picks,
   insurance,
-  filters,
 }: {
   layout: "mobile" | "desktop";
   picks: Provider[];
   insurance: string;
-  filters: Filters;
 }) {
   return (
     <section className="search-picks" aria-labelledby={`picks-title-${layout}`}>
@@ -709,7 +700,7 @@ function TopPicks({
           <PickCard
             key={provider.id}
             provider={provider}
-            why={matchSentence(provider, insurance, filters)}
+            why={matchSentence(provider, insurance)}
           />
         ))}
       </ol>

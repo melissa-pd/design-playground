@@ -1003,14 +1003,6 @@ button {
   line-height: 28px;
 }
 
-.search-picks-answers {
-  max-width: 68ch;
-  margin: var(--space-4) 0 0;
-  color: #5b5f63;
-  font-size: 14px;
-  line-height: 20px;
-}
-
 .search-picks-grid {
   display: grid;
   gap: var(--space-9);

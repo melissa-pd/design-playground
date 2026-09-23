@@ -7,7 +7,6 @@ import {
   formatStats,
   insurancePlans,
   insuranceStats,
-  onboarding,
   languageStats,
   providers,
   specialtyOptions,
@@ -698,12 +697,6 @@ function TopPicks({
       <h3 className="search-picks-title" id={`picks-title-${layout}`}>
         Your top {picks.length === 1 ? "match" : `${picks.length} matches`}
       </h3>
-      <p className="search-picks-answers">
-        From your answers: {onboarding.goals.join(" and ").toLowerCase()} ·{" "}
-        {onboarding.tone.join(" or ").toLowerCase()} tone · {onboarding.sessions.toLowerCase()} ·{" "}
-        {onboarding.wantsIntroCall ? "free intro call" : "ready to book"} ·{" "}
-        {onboarding.therapistGender.toLowerCase()} therapist
-      </p>
       <ol className="search-picks-grid">
         {picks.map((provider, index) => (
           <PickCard key={provider.id} provider={provider} why={callouts[index]} />

@@ -23,6 +23,7 @@ export type Provider = {
   bio: string;
   specialties: string[];
   style: string[];
+  gender: "Woman" | "Man" | "Non-binary";
   insuranceCount: number;
   nextOpeningDate: OpeningDate;
   freeConsult?: boolean;
@@ -36,16 +37,7 @@ export const providers: Provider[] = [
     bio: "You are in the right place. I work with a diverse population promoting ease in communication, conflict resolution, intimacy issues, family dynamics, and life transitions. I am an LGBTQA+ ally.",
     specialties: ["Relationship issues", "ADD/ADHD", "Anger management", "Anxiety", "Bipolar disorder"],
     style: ["Affirming", "Direct", "Inquisitive"],
-    insuranceCount: 4,
-    nextOpeningDate: "2026-09-22",
-  },
-  {
-    id: "annmarie-carr",
-    name: "Annmarie Carr",
-    photo: "/providers/annmarie-carr.png",
-    bio: "For more than twenty years, I have had the privilege of walking alongside adolescents, adults, and couples during some of the most difficult and meaningful seasons of their lives. I believe that sometimes it can be…",
-    specialties: ["Relationship issues", "ADD/ADHD", "Anger management", "Anxiety", "Bipolar disorder"],
-    style: ["Empowering", "Open-minded", "Warm"],
+    gender: "Woman",
     insuranceCount: 4,
     nextOpeningDate: "2026-09-22",
   },
@@ -56,9 +48,21 @@ export const providers: Provider[] = [
     bio: "“Recognizing that there is no universal manual for life, Lacey believes that through supportive collaboration, individuals can develop a personalized blueprint that honors autonomy while strengthening self-awareness and a",
     specialties: ["Relationship issues", "ADD/ADHD", "Anger management", "Anxiety", "Bipolar disorder"],
     style: ["Empowering", "Energetic", "Warm"],
+    gender: "Woman",
     insuranceCount: 6,
     nextOpeningDate: "2026-09-22",
     freeConsult: true,
+  },
+  {
+    id: "annmarie-carr",
+    name: "Annmarie Carr",
+    photo: "/providers/annmarie-carr.png",
+    bio: "For more than twenty years, I have had the privilege of walking alongside adolescents, adults, and couples during some of the most difficult and meaningful seasons of their lives. I believe that sometimes it can be…",
+    specialties: ["Relationship issues", "ADD/ADHD", "Anger management", "Anxiety", "Bipolar disorder"],
+    style: ["Empowering", "Open-minded", "Warm"],
+    gender: "Woman",
+    insuranceCount: 4,
+    nextOpeningDate: "2026-09-22",
   },
   {
     id: "erika-preston",
@@ -67,6 +71,7 @@ export const providers: Provider[] = [
     bio: "I'm Erika Preston, an LMHC with over 11 years of experience in the field. Throughout my career, I've had the privilege of working in a variety of settings, allowing me to develop a diverse skill set and a deep…",
     specialties: ["Relationship issues", "Anxiety", "Bipolar disorder", "Depression", "Family issues"],
     style: ["Affirming", "Solution-oriented", "Warm"],
+    gender: "Woman",
     insuranceCount: 12,
     nextOpeningDate: "2026-09-29",
   },
@@ -77,6 +82,7 @@ export const providers: Provider[] = [
     bio: "Hello, I’m Charles, a Licensed Independent Clinical Social Worker (LICSW) dedicated to helping adults build healthier, more fulfilling lives. I work with individuals and couples facing anxiety, depression, trauma,…",
     specialties: ["Relationship issues", "Anxiety", "Bipolar disorder", "Chronic conditions", "Cultural & ethnic issues"],
     style: ["Energetic", "Humorous", "Warm"],
+    gender: "Man",
     insuranceCount: 6,
     nextOpeningDate: "2026-09-28",
     freeConsult: true,
@@ -88,6 +94,7 @@ export const providers: Provider[] = [
     bio: "“I specialize in supporting clients throughout the perinatal period, including pregnancy and postpartum...”",
     specialties: ["Relationship issues", "ADD/ADHD", "Anxiety", "Cultural & ethnic issues", "Family issues"],
     style: ["Empowering", "Inquisitive", "Participatory"],
+    gender: "Woman",
     insuranceCount: 7,
     nextOpeningDate: "2026-09-22",
   },
@@ -98,6 +105,7 @@ export const providers: Provider[] = [
     bio: "Krystal is known for her warm, no-nonsense approach. She doesn't sit in silence or rely on clinical jargon.",
     specialties: ["Relationship issues", "Anxiety", "Family issues", "Identity issues", "LGBTQIA+"],
     style: ["Challenging", "Holistic", "Open-minded"],
+    gender: "Woman",
     insuranceCount: 8,
     nextOpeningDate: "2026-09-22",
     freeConsult: true,
@@ -109,6 +117,7 @@ export const providers: Provider[] = [
     bio: "My approach is to engage people with unconditional regard and to utilize Rational Emotive therapy as appropriate.",
     specialties: ["Relationship issues", "ADD/ADHD", "Anger management", "Anxiety", "Bipolar disorder"],
     style: ["Affirming", "Direct", "Warm"],
+    gender: "Man",
     insuranceCount: 12,
     nextOpeningDate: "2026-09-30",
   },
@@ -119,6 +128,7 @@ export const providers: Provider[] = [
     bio: "As a former Division I athlete, I understand the pressure to perform, achieve, and “hold it all together”—while internally feeling something very different.",
     specialties: ["Relationship issues", "ADD/ADHD", "Anger management", "Anxiety", "Depression"],
     style: ["Affirming", "Participatory", "Warm"],
+    gender: "Woman",
     insuranceCount: 7,
     nextOpeningDate: "2026-09-23",
   },
@@ -129,6 +139,7 @@ export const providers: Provider[] = [
     bio: "I am an empathetic, empowering, and communicative therapist who provides perspective on the connection between a person's past and present issues.",
     specialties: ["Relationship issues", "ADD/ADHD", "Anger management", "Anxiety", "Bipolar disorder"],
     style: ["Empowering", "Open-minded", "Warm"],
+    gender: "Woman",
     insuranceCount: 10,
     nextOpeningDate: "2026-09-24",
   },
@@ -152,6 +163,16 @@ export const styleOptions = uniqueSorted(providers.flatMap((provider) => provide
 
 // The prototype is anchored to Tuesday 9/22, so this week runs through Sunday.
 export const thisWeekEnds = "2026-09-27";
+
+// Stand-in answers from an onboarding flow this prototype does not build. The
+// picks are matched against these, so each callout can lead with a different one.
+export const onboarding = {
+  goals: ["Anger management", "Identity issues"],
+  tone: ["Direct", "Warm"],
+  wantsIntroCall: true,
+  therapistGender: "Woman",
+  sessions: "Evenings and weekends",
+};
 
 export const faqs = [
   {

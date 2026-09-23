@@ -1,4 +1,4 @@
-import { formatOpeningDay, thisWeekEnds, type Provider } from "./data";
+import { formatOpeningDay, onboarding, thisWeekEnds, type Provider } from "./data";
 
 export const sortOptions = [
   { id: "recommended", label: "Recommended" },
@@ -69,19 +69,109 @@ export function applySort(list: Provider[], key: SortKey): Provider[] {
   }
 }
 
-function joinList(items: string[]): string {
-  if (items.length < 3) return items.join(" and ");
-  return `${items.slice(0, -1).join(", ")}, and ${items[items.length - 1]}`;
+const genderNoun: Record<string, string> = {
+  Woman: "woman",
+  Man: "man",
+  "Non-binary": "non-binary therapist",
+};
+
+// Every callout opens on the two answers all three picks satisfy, gender and
+// couples work, then earns its own tail. The tails are ordered, and a pick
+// takes the first one that fits and has not been used, so no two repeat.
+const angles: {
+  id: string;
+  tail: (provider: Provider, insurance: string, soonestId: string) => string | null;
+}[] = [
+  {
+    id: "tone",
+    tail: (provider) => {
+      const match = provider.style.find((value) => onboarding.tone.includes(value));
+      return match ? ` with the ${match.toLowerCase()} style you asked for.` : null;
+    },
+  },
+  {
+    id: "goal",
+    tail: (provider) => {
+      const match = provider.specialties.find((value) => onboarding.goals.includes(value));
+      return match ? ` who treats ${match.toLowerCase()}, your top goal.` : null;
+    },
+  },
+  {
+    id: "intro-call",
+    tail: (provider) =>
+      onboarding.wantsIntroCall && provider.freeConsult
+        ? " who offers the free intro call you wanted."
+        : null,
+  },
+  {
+    id: "soonest",
+    tail: (provider, _insurance, soonestId) =>
+      provider.id === soonestId
+        ? `, open soonest of your matches on ${formatOpeningDay(provider.nextOpeningDate)}.`
+        : null,
+  },
+  {
+    id: "carriers",
+    tail: (provider, insurance) =>
+      insurance === "Self-pay"
+        ? " who sees self-pay clients."
+        : ` who takes your ${insurance} plan, one of ${provider.insuranceCount} carriers.`,
+  },
+  { id: "washington", tail: () => ", available virtually across Washington." },
+];
+
+function toneMatch(provider: Provider): string | undefined {
+  return provider.style.find((value) => onboarding.tone.includes(value));
 }
 
-// One sentence for the pick card. The picks stand apart from the filter
-// bar, so this reads off the search and the provider only.
-export function matchSentence(provider: Provider, insurance: string): string {
-  const lead = "Works with couples across Washington";
-  const details = [
-    insurance === "Self-pay" ? "welcomes self-pay" : `takes ${insurance}`,
-    `opens ${formatOpeningDay(provider.nextOpeningDate)}`,
-  ];
-  if (provider.freeConsult) details.push("offers a free consultation");
-  return `${lead}, ${joinList(details)}.`;
+function goalMatch(provider: Provider): string | undefined {
+  return provider.specialties.find((value) => onboarding.goals.includes(value));
+}
+
+// One sentence per pick, each drawn from a different angle.
+export function calloutsForPicks(picks: Provider[], insurance: string): string[] {
+  const soonestId = [...picks].sort((a, b) =>
+    a.nextOpeningDate.localeCompare(b.nextOpeningDate),
+  )[0]?.id;
+  const used = new Set<string>();
+
+  return picks.map((provider, index) => {
+    const wanted = provider.gender === onboarding.therapistGender;
+    const subject = wanted
+      ? `A ${genderNoun[provider.gender]} in couples work`
+      : "A therapist in couples work";
+
+    // The lead pick stacks style, goal, and plan, since it is the strongest match.
+    // The goal stays available to the others, who may share the specialty.
+    const tone = toneMatch(provider);
+    const goal = goalMatch(provider);
+    if (index === 0 && tone && goal) {
+      used.add("tone");
+      used.add("carriers");
+      const plan = insurance === "Self-pay" ? "sees self-pay clients" : `takes ${insurance}`;
+      return `${subject}, ${tone.toLowerCase()} in style, who treats ${goal.toLowerCase()} and ${plan}.`;
+    }
+
+    // The others name what they match, so the callouts rank by how much they cover.
+    const clauses: string[] = [];
+    if (goal) clauses.push(`treats ${goal.toLowerCase()}`);
+    if (onboarding.wantsIntroCall && provider.freeConsult) {
+      clauses.push("offers a free intro call");
+      used.add("intro-call");
+    }
+    if (clauses.length > 0) {
+      used.add("goal");
+      const tail = clauses.length === 1 ? `${clauses[0]}, your top goal` : clauses.join(" and ");
+      return `${subject} who ${tail}.`;
+    }
+
+    for (const angle of angles) {
+      if (used.has(angle.id)) continue;
+      const tail = angle.tail(provider, insurance, soonestId ?? "");
+      if (!tail) continue;
+      used.add(angle.id);
+      return `${subject}${tail}`;
+    }
+    return `${subject}, available virtually across Washington.`;
+  });
 }

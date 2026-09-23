@@ -20,7 +20,7 @@ import {
   emptyFilters,
   hasActiveFilters,
   isSortKey,
-  matchSentence,
+  calloutsForPicks,
   sortOptions,
   type Filters,
   type SortKey,
@@ -690,18 +690,16 @@ function TopPicks({
   picks: Provider[];
   insurance: string;
 }) {
+  const callouts = calloutsForPicks(picks, insurance);
+
   return (
     <section className="search-picks" aria-labelledby={`picks-title-${layout}`}>
       <h3 className="search-picks-title" id={`picks-title-${layout}`}>
         Your top {picks.length === 1 ? "match" : `${picks.length} matches`}
       </h3>
       <ol className="search-picks-grid">
-        {picks.map((provider) => (
-          <PickCard
-            key={provider.id}
-            provider={provider}
-            why={matchSentence(provider, insurance)}
-          />
+        {picks.map((provider, index) => (
+          <PickCard key={provider.id} provider={provider} why={callouts[index]} />
         ))}
       </ol>
     </section>
@@ -719,10 +717,7 @@ function PickCard({ provider, why }: { provider: Provider; why: string }) {
         <p>Therapist</p>
         <p>Virtual • Washington</p>
       </div>
-      <p className="search-pick-why">
-        <strong>Why this fits</strong>
-        {why}
-      </p>
+      <p className="search-pick-why">{why}</p>
       <p className="search-bio">{provider.bio}</p>
       <ul className="search-meta">
         <li>
@@ -740,6 +735,9 @@ function PickCard({ provider, why }: { provider: Provider; why: string }) {
       </ul>
       <div className="search-pick-foot">
         <p>Next opening {formatOpeningDay(provider.nextOpeningDate)}</p>
+        {provider.freeConsult ? (
+          <p className="search-consult">Offers free consultations</p>
+        ) : null}
         <button type="button">View profile and book</button>
       </div>
     </li>

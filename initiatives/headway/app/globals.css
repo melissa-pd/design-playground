@@ -88,7 +88,6 @@ button {
 
 .explorer-kicker,
 .explorer-title,
-.explorer-hypothesis,
 .explorer-rail legend,
 .explorer-variant {
   margin: 0;
@@ -177,11 +176,6 @@ button {
   background: #fff;
   border: 1px solid #cfcbc3;
   border-radius: var(--radius-4);
-}
-
-.explorer-hypothesis {
-  color: var(--muted);
-  font-size: 14px;
 }
 
 .explorer-stage {
@@ -1060,8 +1054,6 @@ button {
 }
 
 .search-pick-why {
-  display: grid;
-  gap: 2px;
   margin: 0;
   padding: 12px 14px;
   color: var(--hlx-color-green-950);
@@ -1069,13 +1061,6 @@ button {
   border-radius: var(--radius-4);
   font-size: 14px;
   line-height: 20px;
-}
-
-.search-pick-why strong {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
 }
 
 .search-pick .search-bio {
@@ -1099,10 +1084,15 @@ button {
 /* The foot sits on the card floor, so the three cards line up. */
 .search-pick-foot {
   display: grid;
-  gap: var(--space-7);
+  gap: 0;
   margin-top: auto;
   padding-top: var(--space-9);
   border-top: 1px solid #dadce0;
+}
+
+/* Only the button needs the gap; the two lines stack tight, as on the cards below. */
+.search-pick-foot button {
+  margin-top: var(--space-7);
 }
 
 .search-pick-foot p {
@@ -1246,7 +1236,8 @@ button {
   margin: 0;
 }
 
-.search-card p.search-consult {
+.search-card p.search-consult,
+.search-pick p.search-consult {
   color: #4fa86b;
   font-weight: 500;
 }

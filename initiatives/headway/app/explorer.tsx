@@ -20,7 +20,6 @@ export function Explorer() {
   const requestedVariant = searchParams.get("variant");
   const viewport: ViewportId = isViewportId(requestedViewport) ? requestedViewport : "both";
   const variant: VariantId = isVariantId(requestedVariant) ? requestedVariant : "sort";
-  const hypothesis = variants.find((item) => item.id === variant)?.hypothesis ?? variants[0].hypothesis;
 
   const [zip, setZip] = useState("98101");
   const [insurance, setInsurance] = useState<string>(insurancePlans[0]);
@@ -114,7 +113,6 @@ export function Explorer() {
             ))}
           </select>
         </label>
-        <p className="explorer-hypothesis">{hypothesis}</p>
       </aside>
       <div className="explorer-stage" ref={stageRef}>
         <div className="explorer-frames" style={{ gap: 28 * scale }}>

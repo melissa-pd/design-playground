@@ -141,13 +141,15 @@ export function calloutsForPicks(picks: Provider[], insurance: string): string[]
       ? `A ${genderNoun[provider.gender]} in couples work`
       : "A therapist in couples work";
 
-    // The lead pick carries both the style and the goal; the rest take one angle each.
+    // The lead pick stacks style, goal, and plan, since it is the strongest match.
+    // The goal stays available to the others, who may share the specialty.
     const tone = toneMatch(provider);
     const goal = goalMatch(provider);
     if (index === 0 && tone && goal) {
       used.add("tone");
-      used.add("goal");
-      return `${subject}, ${tone.toLowerCase()} in style, who treats ${goal.toLowerCase()}.`;
+      used.add("carriers");
+      const plan = insurance === "Self-pay" ? "sees self-pay clients" : `takes ${insurance}`;
+      return `${subject}, ${tone.toLowerCase()} in style, who treats ${goal.toLowerCase()} and ${plan}.`;
     }
 
     for (const angle of angles) {

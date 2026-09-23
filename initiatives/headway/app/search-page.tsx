@@ -702,7 +702,6 @@ function TopPicks({
   return (
     <section className="search-picks" aria-labelledby={`picks-title-${layout}`}>
       <h3 className="search-picks-title" id={`picks-title-${layout}`}>
-        <StarIcon />
         Your top {picks.length === 1 ? "match" : `${picks.length} matches`}
       </h3>
       <ol className="search-picks-grid">
@@ -838,17 +837,6 @@ function StatList({
         ))}
       </ul>
     </article>
-  );
-}
-
-function StarIcon() {
-  return (
-    <svg className="search-star" viewBox="0 0 20 20" aria-hidden="true">
-      <path
-        d="M10 1.8l2.36 4.78 5.28.77-3.82 3.72.9 5.26L10 13.85l-4.72 2.48.9-5.26L2.36 7.35l5.28-.77L10 1.8Z"
-        fill="currentColor"
-      />
-    </svg>
   );
 }
 

@@ -981,29 +981,23 @@ button {
   margin: var(--space-13) -16px 0;
   padding: var(--space-13) var(--space-9) var(--space-15);
   background:
-    radial-gradient(ellipse at 50% 5%, rgba(200, 215, 95, 0.22), transparent 42%),
-    radial-gradient(ellipse at 82% 22%, rgba(195, 210, 85, 0.2), transparent 36%),
-    linear-gradient(0deg, #dbe9f9 0%, #e5ecf7 30%, #e7f0f4 52%, #f7fafc 78%, #fff 100%);
+    radial-gradient(ellipse at 50% 30%, rgba(200, 215, 95, 0.18), transparent 46%),
+    radial-gradient(ellipse at 82% 42%, rgba(195, 210, 85, 0.16), transparent 40%),
+    linear-gradient(
+      180deg,
+      #fff 0%,
+      #f7fafc 14%,
+      #e7f0f4 38%,
+      #e5ecf7 58%,
+      #dbe9f9 76%,
+      #edf3fb 90%,
+      #fff 100%
+    );
 }
 
 .search[data-layout="desktop"] .search-picks {
   margin: var(--space-15) -136px 0;
   padding: var(--space-15) 136px var(--space-16);
-}
-
-.search-picks-title {
-  display: flex;
-  gap: var(--space-4);
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-
-.search-star {
-  flex: none;
-  width: 18px;
-  height: 18px;
-  color: #e9a87c;
 }
 
 .search-picks h3 {

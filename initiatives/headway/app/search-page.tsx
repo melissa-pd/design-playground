@@ -264,12 +264,6 @@ export function SearchPage({
             patients pay as low as $0 per session.
           </p>
         </div>
-        {showFilters || layout === "mobile" ? (
-          <div className="search-toolbar">
-            {showFilters ? <FilterBar filters={state.filters} onChange={onFiltersChange} /> : null}
-            {layout === "mobile" ? sortControl : null}
-          </div>
-        ) : null}
         {picks.length > 0 ? (
           <TopPicks
             layout={layout}
@@ -278,14 +272,22 @@ export function SearchPage({
             filters={activeFilters}
           />
         ) : null}
-        <ResultsHeader
-          layout={layout}
-          total={total}
-          infoOpen={infoOpen}
-          onInfoToggle={() => setInfoOpen((open) => !open)}
-        >
-          {layout === "desktop" ? sortControl : null}
-        </ResultsHeader>
+        {showFilters || layout === "mobile" ? (
+          <div className="search-toolbar">
+            {showFilters ? <FilterBar filters={state.filters} onChange={onFiltersChange} /> : null}
+            {layout === "mobile" ? sortControl : null}
+          </div>
+        ) : null}
+        {listed.length > 0 || total === 0 ? (
+          <ResultsHeader
+            layout={layout}
+            total={listed.length}
+            infoOpen={infoOpen}
+            onInfoToggle={() => setInfoOpen((open) => !open)}
+          >
+            {layout === "desktop" ? sortControl : null}
+          </ResultsHeader>
+        ) : null}
         {total === 0 ? <EmptyState onClear={() => onFiltersChange(emptyFilters)} /> : null}
         {listed.length > 0 ? (
           <ol className="search-grid">

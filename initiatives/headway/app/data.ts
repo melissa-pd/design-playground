@@ -8,7 +8,12 @@ export const insurancePlans = [
 
 export type InsurancePlan = (typeof insurancePlans)[number];
 
-export type OpeningDate = "2026-09-21" | "2026-09-22";
+export type OpeningDate =
+  | "2026-09-21"
+  | "2026-09-22"
+  | "2026-09-28"
+  | "2026-09-29"
+  | "2026-09-30";
 
 export type Provider = {
   id: string;
@@ -62,7 +67,7 @@ export const providers: Provider[] = [
     specialties: ["Relationship issues", "Anxiety", "Bipolar disorder", "Depression", "Family issues"],
     style: ["Affirming", "Solution-oriented", "Warm"],
     insuranceCount: 12,
-    nextOpeningDate: "2026-09-22",
+    nextOpeningDate: "2026-09-29",
   },
   {
     id: "charles-codner",
@@ -72,7 +77,7 @@ export const providers: Provider[] = [
     specialties: ["Relationship issues", "Anxiety", "Bipolar disorder", "Chronic conditions", "Cultural & ethnic issues"],
     style: ["Energetic", "Humorous", "Warm"],
     insuranceCount: 6,
-    nextOpeningDate: "2026-09-21",
+    nextOpeningDate: "2026-09-28",
     freeConsult: true,
   },
   {
@@ -104,7 +109,7 @@ export const providers: Provider[] = [
     specialties: ["Relationship issues", "ADD/ADHD", "Anger management", "Anxiety", "Bipolar disorder"],
     style: ["Affirming", "Direct", "Warm"],
     insuranceCount: 12,
-    nextOpeningDate: "2026-09-22",
+    nextOpeningDate: "2026-09-30",
   },
   {
     id: "karina-pickard",

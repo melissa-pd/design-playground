@@ -972,8 +972,34 @@ button {
 
 /* Top picks */
 
+/* The hero gradient, flipped top to bottom. */
 .search-picks {
-  margin-top: var(--space-7);
+  margin-top: var(--space-13);
+  padding: var(--space-13) var(--space-9) var(--space-15);
+  background:
+    radial-gradient(ellipse at 50% 5%, rgba(200, 215, 95, 0.22), transparent 42%),
+    radial-gradient(ellipse at 82% 22%, rgba(195, 210, 85, 0.2), transparent 36%),
+    linear-gradient(0deg, #dbe9f9 0%, #e5ecf7 30%, #e7f0f4 52%, #f7fafc 78%, #fff 100%);
+  border-radius: 12px;
+}
+
+.search[data-layout="desktop"] .search-picks {
+  padding: var(--space-15) var(--space-15) var(--space-16);
+}
+
+.search-picks-title {
+  display: flex;
+  gap: var(--space-4);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.search-star {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  color: #e9a87c;
 }
 
 .search-picks h3,
@@ -995,43 +1021,105 @@ button {
 
 .search-picks-grid {
   display: grid;
-  gap: 16px;
-  margin: 16px 0 0;
+  gap: var(--space-9);
+  margin: var(--space-13) 0 0;
   padding: 0;
   list-style: none;
 }
 
 .search[data-layout="desktop"] .search-picks-grid {
   grid-template-columns: repeat(3, 1fr);
+  align-items: stretch;
 }
 
 .search-pick {
-  display: grid;
-  gap: 12px;
-  align-content: start;
-  padding: 20px;
-  background: #fff;
-  border: 1px solid #b7dcc9;
-  border-radius: var(--radius-4);
-}
-
-.search-pick-top {
   display: flex;
-  gap: 12px;
-  align-items: center;
+  flex-direction: column;
+  gap: var(--space-7);
+  padding: var(--space-13);
+  background: #fff;
+  border: 1px solid #e3e9ee;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(33, 35, 38, 0.06);
 }
 
 .search[data-layout] .search-pick .search-portrait {
-  width: 64px;
-  height: 64px;
+  width: 80px;
+  height: 80px;
 }
 
-.search-pick h4 {
+.search-pick-identity {
+  display: grid;
+  gap: 2px;
+}
+
+.search-pick-identity h4 {
   margin: 0;
   font-family: var(--font-heading-stack);
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 400;
-  line-height: 26px;
+  line-height: 28px;
+  letter-spacing: -0.4px;
+}
+
+.search-pick-identity p {
+  margin: 0;
+  color: #717171;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.search-pick-why {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 12px 14px;
+  color: var(--hlx-color-green-950);
+  background: var(--hlx-color-background-selected);
+  border-radius: var(--radius-4);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.search-pick-why strong {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.search-pick .search-bio {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+
+.search-pick .search-portrait-wrap,
+.search-pick .search-meta {
+  flex: none;
+}
+
+.search-pick .search-meta span {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* The foot sits on the card floor, so the three cards line up. */
+.search-pick-foot {
+  display: grid;
+  gap: var(--space-7);
+  margin-top: auto;
+  padding-top: var(--space-9);
+  border-top: 1px solid #dadce0;
+}
+
+.search-pick-foot p {
+  margin: 0;
+  color: #717171;
+  font-size: 14px;
+  line-height: 20px;
 }
 
 .search-pick button {
@@ -1201,24 +1289,6 @@ button {
   font-size: 16px;
   font-weight: 500;
   line-height: 22px;
-}
-
-.search-reasons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.search-reasons li {
-  padding: 4px 10px;
-  color: #052e1c;
-  background: #d0eee0;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 650;
 }
 
 .search-pager {

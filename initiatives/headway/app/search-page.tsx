@@ -20,7 +20,7 @@ import {
   emptyFilters,
   hasActiveFilters,
   isSortKey,
-  pickReasons,
+  matchSentence,
   sortOptions,
   type Filters,
   type SortKey,
@@ -706,14 +706,17 @@ function TopPicks({
 }) {
   return (
     <section className="search-picks" aria-labelledby={`picks-title-${layout}`}>
-      <h3 id={`picks-title-${layout}`}>Best matches for your search</h3>
+      <h3 className="search-picks-title" id={`picks-title-${layout}`}>
+        <StarIcon />
+        Your top {picks.length === 1 ? "match" : `${picks.length} matches`}
+      </h3>
       <ol className="search-picks-grid">
         {picks.map((provider, index) => (
           <PickCard
             key={provider.id}
             provider={provider}
             rank={index + 1}
-            reasons={pickReasons(provider, insurance, filters)}
+            why={matchSentence(provider, insurance, filters)}
           />
         ))}
       </ol>
@@ -724,27 +727,46 @@ function TopPicks({
 function PickCard({
   provider,
   rank,
-  reasons,
+  why,
 }: {
   provider: Provider;
   rank: number;
-  reasons: string[];
+  why: string;
 }) {
   return (
     <li className="search-pick">
-      <div className="search-pick-top">
-        <div className="search-portrait-wrap">
-          <span className="search-rank">{rank}</span>
-          <img className="search-portrait" src={provider.photo} alt="" width={64} height={64} />
-        </div>
-        <h4>{provider.name}</h4>
+      <div className="search-portrait-wrap">
+        <span className="search-rank">{rank}</span>
+        <img className="search-portrait" src={provider.photo} alt="" width={80} height={80} />
       </div>
-      <ul className="search-reasons" aria-label={`Why ${provider.name} matches`}>
-        {reasons.map((reason) => (
-          <li key={reason}>{reason}</li>
-        ))}
+      <div className="search-pick-identity">
+        <h4>{provider.name}</h4>
+        <p>Therapist</p>
+        <p>Virtual • Washington</p>
+      </div>
+      <p className="search-pick-why">
+        <strong>Why this fits</strong>
+        {why}
+      </p>
+      <p className="search-bio">{provider.bio}</p>
+      <ul className="search-meta">
+        <li>
+          <img src="/icons/icon-spec.svg" alt="" width={18} height={18} />
+          <span>{provider.specialties.join(", ")}</span>
+        </li>
+        <li>
+          <img src="/icons/icon-style.svg" alt="" width={18} height={18} />
+          <span>{provider.style.join(", ")}</span>
+        </li>
+        <li>
+          <img src="/icons/icon-ins.svg" alt="" width={18} height={18} />
+          <span>Accepts {provider.insuranceCount} insurance carriers</span>
+        </li>
       </ul>
-      <button type="button">View profile and book</button>
+      <div className="search-pick-foot">
+        <p>Next opening {formatOpeningDay(provider.nextOpeningDate)}</p>
+        <button type="button">View profile and book</button>
+      </div>
     </li>
   );
 }
@@ -831,6 +853,17 @@ function StatList({
         ))}
       </ul>
     </article>
+  );
+}
+
+function StarIcon() {
+  return (
+    <svg className="search-star" viewBox="0 0 20 20" aria-hidden="true">
+      <path
+        d="M10 1.8l2.36 4.78 5.28.77-3.82 3.72.9 5.26L10 13.85l-4.72 2.48.9-5.26L2.36 7.35l5.28-.77L10 1.8Z"
+        fill="currentColor"
+      />
+    </svg>
   );
 }
 

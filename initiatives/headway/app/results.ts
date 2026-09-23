@@ -69,14 +69,26 @@ export function applySort(list: Provider[], key: SortKey): Provider[] {
   }
 }
 
-// The filters someone chose come first, so their own choices show on the pill.
-export function pickReasons(provider: Provider, insurance: string, filters: Filters): string[] {
-  const reasons = [
+function joinList(items: string[]): string {
+  if (items.length < 3) return items.join(" and ");
+  return `${items.slice(0, -1).join(", ")}, and ${items[items.length - 1]}`;
+}
+
+// One sentence for the pick card, built from the live search rather than
+// from anything written about the provider.
+export function matchSentence(provider: Provider, insurance: string, filters: Filters): string {
+  const matched = [
     ...filters.specialties.filter((value) => provider.specialties.includes(value)),
     ...filters.styles.filter((value) => provider.style.includes(value)),
-    insurance === "Self-pay" ? "Self-pay welcome" : `Takes ${insurance}`,
   ];
-  if (provider.freeConsult) reasons.push("Free consultation");
-  reasons.push(`Opening ${formatOpeningDay(provider.nextOpeningDate)}`);
-  return reasons.slice(0, 3);
+  const lead =
+    matched.length > 0
+      ? `Matches your ${joinList(matched)} ${matched.length === 1 ? "filter" : "filters"}`
+      : "Works with couples across Washington";
+  const details = [
+    insurance === "Self-pay" ? "welcomes self-pay" : `takes ${insurance}`,
+    `opens ${formatOpeningDay(provider.nextOpeningDate)}`,
+  ];
+  if (provider.freeConsult) details.push("offers a free consultation");
+  return `${lead}, ${joinList(details)}.`;
 }

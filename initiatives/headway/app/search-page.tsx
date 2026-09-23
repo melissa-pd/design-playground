@@ -7,6 +7,7 @@ import {
   formatStats,
   insurancePlans,
   insuranceStats,
+  onboarding,
   languageStats,
   providers,
   specialtyOptions,
@@ -20,7 +21,7 @@ import {
   emptyFilters,
   hasActiveFilters,
   isSortKey,
-  matchSentence,
+  calloutsForPicks,
   sortOptions,
   type Filters,
   type SortKey,
@@ -690,18 +691,22 @@ function TopPicks({
   picks: Provider[];
   insurance: string;
 }) {
+  const callouts = calloutsForPicks(picks, insurance);
+
   return (
     <section className="search-picks" aria-labelledby={`picks-title-${layout}`}>
       <h3 className="search-picks-title" id={`picks-title-${layout}`}>
         Your top {picks.length === 1 ? "match" : `${picks.length} matches`}
       </h3>
+      <p className="search-picks-answers">
+        From your answers: {onboarding.goals.join(" and ").toLowerCase()} ·{" "}
+        {onboarding.tone.join(" or ").toLowerCase()} tone · {onboarding.sessions.toLowerCase()} ·{" "}
+        {onboarding.wantsIntroCall ? "free intro call" : "ready to book"} ·{" "}
+        {onboarding.therapistGender.toLowerCase()} on gender
+      </p>
       <ol className="search-picks-grid">
-        {picks.map((provider) => (
-          <PickCard
-            key={provider.id}
-            provider={provider}
-            why={matchSentence(provider, insurance)}
-          />
+        {picks.map((provider, index) => (
+          <PickCard key={provider.id} provider={provider} why={callouts[index]} />
         ))}
       </ol>
     </section>

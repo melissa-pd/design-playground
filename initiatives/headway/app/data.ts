@@ -153,6 +153,16 @@ export const styleOptions = uniqueSorted(providers.flatMap((provider) => provide
 // The prototype is anchored to Tuesday 9/22, so this week runs through Sunday.
 export const thisWeekEnds = "2026-09-27";
 
+// Stand-in answers from an onboarding flow this prototype does not build. The
+// picks are matched against these, so each callout can lead with a different one.
+export const onboarding = {
+  goals: ["Anger management", "Identity issues"],
+  tone: ["Direct", "Warm"],
+  wantsIntroCall: true,
+  therapistGender: "No preference",
+  sessions: "Evenings and weekends",
+};
+
 export const faqs = [
   {
     id: "kind",

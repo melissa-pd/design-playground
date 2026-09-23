@@ -1,4 +1,4 @@
-import { formatOpeningDay, thisWeekEnds, type Provider } from "./data";
+import { formatOpeningDay, onboarding, thisWeekEnds, type Provider } from "./data";
 
 export const sortOptions = [
   { id: "recommended", label: "Recommended" },
@@ -69,19 +69,76 @@ export function applySort(list: Provider[], key: SortKey): Provider[] {
   }
 }
 
-function joinList(items: string[]): string {
-  if (items.length < 3) return items.join(" and ");
-  return `${items.slice(0, -1).join(", ")}, and ${items[items.length - 1]}`;
+function firstName(provider: Provider): string {
+  return provider.name.split(" ")[0];
 }
 
-// One sentence for the pick card. The picks stand apart from the filter
-// bar, so this reads off the search and the provider only.
-export function matchSentence(provider: Provider, insurance: string): string {
-  const lead = "Works with couples across Washington";
-  const details = [
-    insurance === "Self-pay" ? "welcomes self-pay" : `takes ${insurance}`,
-    `opens ${formatOpeningDay(provider.nextOpeningDate)}`,
-  ];
-  if (provider.freeConsult) details.push("offers a free consultation");
-  return `${lead}, ${joinList(details)}.`;
+// Each angle answers "why this one" from a different onboarding answer. A pick
+// takes the first angle that fits and has not been used, so the three callouts
+// never repeat each other.
+const angles: {
+  id: string;
+  build: (provider: Provider, insurance: string, soonestId: string) => string | null;
+}[] = [
+  {
+    id: "tone",
+    build: (provider) => {
+      const match = provider.style.find((value) => onboarding.tone.includes(value));
+      if (!match) return null;
+      return `${match} was one of your must-haves, and it is one of only three words ${firstName(provider)} uses for the work.`;
+    },
+  },
+  {
+    id: "goal",
+    build: (provider) => {
+      const match = provider.specialties.find((value) => onboarding.goals.includes(value));
+      if (!match) return null;
+      return `${match} was top of the list you gave us, and ${firstName(provider)} treats it alongside couples work.`;
+    },
+  },
+  {
+    id: "intro-call",
+    build: (provider) =>
+      onboarding.wantsIntroCall && provider.freeConsult
+        ? `You wanted to talk before committing, and ${firstName(provider)} offers a free consultation to start.`
+        : null,
+  },
+  {
+    id: "soonest",
+    build: (provider, _insurance, soonestId) =>
+      provider.id === soonestId
+        ? `You are ready to start now: ${firstName(provider)} has the soonest opening of your matches, ${formatOpeningDay(provider.nextOpeningDate)}.`
+        : null,
+  },
+  {
+    id: "carriers",
+    build: (provider, insurance) =>
+      insurance === "Self-pay"
+        ? `${firstName(provider)} sees self-pay clients, so there is no plan to verify first.`
+        : `Your ${insurance} plan is one of ${provider.insuranceCount} carriers ${firstName(provider)} accepts.`,
+  },
+  {
+    id: "washington",
+    build: (provider) =>
+      `${firstName(provider)} works with couples across Washington and sees them virtually.`,
+  },
+];
+
+// One sentence per pick, each drawn from a different angle.
+export function calloutsForPicks(picks: Provider[], insurance: string): string[] {
+  const soonestId = [...picks].sort((a, b) =>
+    a.nextOpeningDate.localeCompare(b.nextOpeningDate),
+  )[0]?.id;
+  const used = new Set<string>();
+
+  return picks.map((provider) => {
+    for (const angle of angles) {
+      if (used.has(angle.id)) continue;
+      const sentence = angle.build(provider, insurance, soonestId ?? "");
+      if (!sentence) continue;
+      used.add(angle.id);
+      return sentence;
+    }
+    return angles[angles.length - 1].build(provider, insurance, soonestId ?? "") ?? "";
+  });
 }

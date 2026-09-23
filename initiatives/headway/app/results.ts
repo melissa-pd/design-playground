@@ -120,6 +120,14 @@ const angles: {
   { id: "washington", tail: () => ", available virtually across Washington." },
 ];
 
+function toneMatch(provider: Provider): string | undefined {
+  return provider.style.find((value) => onboarding.tone.includes(value));
+}
+
+function goalMatch(provider: Provider): string | undefined {
+  return provider.specialties.find((value) => onboarding.goals.includes(value));
+}
+
 // One sentence per pick, each drawn from a different angle.
 export function calloutsForPicks(picks: Provider[], insurance: string): string[] {
   const soonestId = [...picks].sort((a, b) =>
@@ -127,11 +135,20 @@ export function calloutsForPicks(picks: Provider[], insurance: string): string[]
   )[0]?.id;
   const used = new Set<string>();
 
-  return picks.map((provider) => {
+  return picks.map((provider, index) => {
     const wanted = provider.gender === onboarding.therapistGender;
     const subject = wanted
       ? `A ${genderNoun[provider.gender]} in couples work`
       : "A therapist in couples work";
+
+    // The lead pick carries both the style and the goal; the rest take one angle each.
+    const tone = toneMatch(provider);
+    const goal = goalMatch(provider);
+    if (index === 0 && tone && goal) {
+      used.add("tone");
+      used.add("goal");
+      return `${subject}, ${tone.toLowerCase()} in style, who treats ${goal.toLowerCase()}.`;
+    }
 
     for (const angle of angles) {
       if (used.has(angle.id)) continue;

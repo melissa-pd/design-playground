@@ -742,6 +742,9 @@ function PickCard({ provider, why }: { provider: Provider; why: string }) {
       </ul>
       <div className="search-pick-foot">
         <p>Next opening {formatOpeningDay(provider.nextOpeningDate)}</p>
+        {provider.freeConsult ? (
+          <p className="search-consult">Offers free consultations</p>
+        ) : null}
         <button type="button">View profile and book</button>
       </div>
     </li>

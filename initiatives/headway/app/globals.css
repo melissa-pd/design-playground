@@ -88,7 +88,6 @@ button {
 
 .explorer-kicker,
 .explorer-title,
-.explorer-hypothesis,
 .explorer-rail legend,
 .explorer-variant {
   margin: 0;
@@ -177,11 +176,6 @@ button {
   background: #fff;
   border: 1px solid #cfcbc3;
   border-radius: var(--radius-4);
-}
-
-.explorer-hypothesis {
-  color: var(--muted);
-  font-size: 14px;
 }
 
 .explorer-stage {
@@ -1245,7 +1239,8 @@ button {
   margin: 0;
 }
 
-.search-card p.search-consult {
+.search-card p.search-consult,
+.search-pick p.search-consult {
   color: #4fa86b;
   font-weight: 500;
 }

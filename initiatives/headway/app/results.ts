@@ -69,61 +69,55 @@ export function applySort(list: Provider[], key: SortKey): Provider[] {
   }
 }
 
-function firstName(provider: Provider): string {
-  return provider.name.split(" ")[0];
-}
+const genderNoun: Record<string, string> = {
+  Woman: "woman",
+  Man: "man",
+  "Non-binary": "non-binary therapist",
+};
 
-// Each angle answers "why this one" from a different onboarding answer. A pick
-// takes the first angle that fits and has not been used, so the three callouts
-// never repeat each other.
+// Every callout opens on the two answers all three picks satisfy, gender and
+// couples work, then earns its own tail. The tails are ordered, and a pick
+// takes the first one that fits and has not been used, so no two repeat.
 const angles: {
   id: string;
-  build: (provider: Provider, insurance: string, soonestId: string) => string | null;
+  tail: (provider: Provider, insurance: string, soonestId: string) => string | null;
 }[] = [
   {
     id: "tone",
-    build: (provider) => {
+    tail: (provider) => {
       const match = provider.style.find((value) => onboarding.tone.includes(value));
-      if (!match) return null;
-      const wanted = provider.gender === onboarding.therapistGender;
-      const who = wanted ? `a ${onboarding.therapistGender.toLowerCase()} with` : "someone with";
-      return `You asked for ${who} a ${match.toLowerCase()} style, and couples work sits at the center of what ${firstName(provider)} does.`;
+      return match ? ` with the ${match.toLowerCase()} style you asked for.` : null;
     },
   },
   {
     id: "goal",
-    build: (provider) => {
+    tail: (provider) => {
       const match = provider.specialties.find((value) => onboarding.goals.includes(value));
-      if (!match) return null;
-      return `${match} was top of the list you gave us, and it is one of the five specialties ${firstName(provider)} lists.`;
+      return match ? ` who treats ${match.toLowerCase()}, your top goal.` : null;
     },
   },
   {
     id: "intro-call",
-    build: (provider) =>
+    tail: (provider) =>
       onboarding.wantsIntroCall && provider.freeConsult
-        ? `You wanted to talk before committing, and ${firstName(provider)} offers a free consultation to start.`
+        ? " who offers the free intro call you wanted."
         : null,
   },
   {
     id: "soonest",
-    build: (provider, _insurance, soonestId) =>
+    tail: (provider, _insurance, soonestId) =>
       provider.id === soonestId
-        ? `You are ready to start now: ${firstName(provider)} has the soonest opening of your matches, ${formatOpeningDay(provider.nextOpeningDate)}.`
+        ? `, open soonest of your matches on ${formatOpeningDay(provider.nextOpeningDate)}.`
         : null,
   },
   {
     id: "carriers",
-    build: (provider, insurance) =>
+    tail: (provider, insurance) =>
       insurance === "Self-pay"
-        ? `${firstName(provider)} sees self-pay clients, so there is no plan to verify first.`
-        : `Your ${insurance} plan is one of ${provider.insuranceCount} carriers ${firstName(provider)} accepts.`,
+        ? " who sees self-pay clients."
+        : ` who takes your ${insurance} plan, one of ${provider.insuranceCount} carriers.`,
   },
-  {
-    id: "washington",
-    build: (provider) =>
-      `${firstName(provider)} works with couples across Washington and sees them virtually.`,
-  },
+  { id: "washington", tail: () => ", available virtually across Washington." },
 ];
 
 // One sentence per pick, each drawn from a different angle.
@@ -134,13 +128,18 @@ export function calloutsForPicks(picks: Provider[], insurance: string): string[]
   const used = new Set<string>();
 
   return picks.map((provider) => {
+    const wanted = provider.gender === onboarding.therapistGender;
+    const subject = wanted
+      ? `A ${genderNoun[provider.gender]} in couples work`
+      : "A therapist in couples work";
+
     for (const angle of angles) {
       if (used.has(angle.id)) continue;
-      const sentence = angle.build(provider, insurance, soonestId ?? "");
-      if (!sentence) continue;
+      const tail = angle.tail(provider, insurance, soonestId ?? "");
+      if (!tail) continue;
       used.add(angle.id);
-      return sentence;
+      return `${subject}${tail}`;
     }
-    return angles[angles.length - 1].build(provider, insurance, soonestId ?? "") ?? "";
+    return `${subject}, available virtually across Washington.`;
   });
 }

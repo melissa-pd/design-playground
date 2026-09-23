@@ -1,21 +1,22 @@
+// Variants are cumulative: each one includes everything before it.
 export const variants = [
   {
-    id: "baseline",
-    label: "Baseline",
+    id: "sort",
+    label: "Sort order",
     hypothesis:
-      "The current search page asks people to scan a directory after a light zip and insurance form.",
+      "Naming the count and letting people reorder the list means fewer descriptions to read before the right one floats up.",
   },
   {
-    id: "why-this-match",
-    label: "Why this match",
+    id: "filter-bar",
+    label: "Filter bar",
     hypothesis:
-      "The decision gets easier when the match is visible on the card: couples care, Washington, the selected insurance, and the next opening.",
+      "Filters turn 'read everyone' into 'read the three who fit'. The list narrows by what matters to this couple before a single bio is opened.",
   },
   {
-    id: "short-list",
-    label: "Short list",
+    id: "top-three",
+    label: "Top 3 picks",
     hypothesis:
-      "A short list is easier to act on than a catalog. The directory and pager step back, with a quiet path to more.",
+      "A ranked top 3 with the reasons on the card answers 'who should I actually message' without reading ten bios.",
   },
 ] as const;
 
@@ -31,4 +32,8 @@ export function isVariantId(value: string | null): value is VariantId {
 
 export function isViewportId(value: string | null): value is ViewportId {
   return viewports.some((viewport) => viewport === value);
+}
+
+export function variantRank(id: VariantId): number {
+  return variants.findIndex((variant) => variant.id === id);
 }

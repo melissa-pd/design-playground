@@ -12,9 +12,11 @@ The page follows the Figma frame `1440w default`: a Washington couples search wi
 
 ## Variants
 
-- Baseline: scan a directory after a light zip and insurance form
-- Why this match: each card leads with why it fits the search
-- Short list: a ranked handful, with a quiet path to more
+Each variant includes the one before it.
+
+- Sort order: a count line and a sort dropdown above the results
+- Filter bar: availability, free consultation, specialty, and approach chips
+- Top 3 picks: a ranked "Best matches" row with reasons, above the full list
 
 ## Run locally
 

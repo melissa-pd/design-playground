@@ -527,7 +527,8 @@ button {
 .search-find:hover,
 .search-close button:hover,
 .search-sticky button:hover,
-.search-card button:hover {
+.search-card button:hover,
+.search-pick button:hover {
   background: #084e2e;
 }
 
@@ -536,7 +537,12 @@ button {
 .search-portal:focus-visible,
 .search-close button:focus-visible,
 .search-card button:focus-visible,
-.search-quiet:focus-visible,
+.search-pick button:focus-visible,
+.search-sort:has(select:focus-visible),
+.search-info:focus-visible,
+.search-chip:focus-visible,
+.search-chip-panel input:focus-visible,
+.search-chip-clear:focus-visible,
 .search-pager button:focus-visible,
 .search-faq button:focus-visible,
 .search-sticky button:focus-visible,
@@ -676,10 +682,444 @@ button {
   line-height: 22px;
 }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Toolbar: filters on the left, sort as a text control on the right */
+
+.search-toolbar {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-13);
+  margin-top: var(--space-13);
+}
+
+.search-results-bar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-9);
+  margin-top: var(--space-13);
+}
+
+.search-results-bar + .search-grid {
+  margin-top: var(--space-9);
+}
+
+.search-count-wrap {
+  min-width: 0;
+}
+
+.search-count {
+  margin: 0;
+  color: #353535;
+  font-size: 15px;
+  line-height: 22px;
+}
+
+.search-count strong {
+  color: #0b663d;
+  font-weight: 600;
+}
+
+.search-info {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-left: 4px;
+  padding: 0;
+  color: #0b663d;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.search-info-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.search-count-note {
+  max-width: 60ch;
+  margin: 4px 0 0;
+  color: #717171;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.search-sort {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  gap: var(--space-2);
+  align-items: center;
+  margin-left: auto;
+  color: #353535;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.search-sort label {
+  cursor: pointer;
+}
+
+.search-sort-value {
+  font-weight: 400;
+}
+
+.search-sort .search-faq-chevron {
+  width: 14px;
+  height: 14px;
+}
+
+.search-sort .search-faq-chevron path {
+  fill: currentColor;
+}
+
+.search-sort:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.search-sort select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  appearance: none;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 15px;
+}
+
+/* Filter bar */
+
+.search-filters {
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1;
+  gap: var(--space-4);
+  align-items: center;
+  min-width: 0;
+}
+
+/* Mobile: the sort control sits in the chip row and looks like a chip. */
+.search[data-layout="mobile"] .search-toolbar {
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.search[data-layout="mobile"] .search-filters {
+  display: contents;
+}
+
+.search[data-layout="mobile"] .search-sort {
+  gap: var(--space-3);
+  min-height: 36px;
+  margin-left: 0;
+  padding: 0 10px;
+  color: #353535;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.23);
+  border-radius: var(--radius-2);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.search[data-layout="mobile"] .search-sort:hover {
+  text-decoration: none;
+  border-color: #0b663d;
+}
+
+.search[data-layout="mobile"] .search-sort-value {
+  font-weight: 400;
+}
+
+.search-chip {
+  display: inline-flex;
+  gap: var(--space-3);
+  align-items: center;
+  min-height: 36px;
+  padding: 0 10px;
+  color: #353535;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.23);
+  border-radius: var(--radius-2);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  white-space: nowrap;
+  list-style: none;
+  cursor: pointer;
+}
+
+.search-chip::-webkit-details-marker {
+  display: none;
+}
+
+.search-chip:hover {
+  border-color: #0b663d;
+}
+
+.search-chip[aria-pressed="true"],
+.search-chip-menu:has(input:checked) > .search-chip {
+  color: var(--hlx-color-green-950);
+  background: var(--hlx-color-background-selected);
+  border-color: #0b663d;
+}
+
+.search-chip .search-faq-chevron {
+  width: 14px;
+  height: 14px;
+}
+
+.search-chip-menu {
+  position: relative;
+}
+
+.search-chip-menu[open] > .search-chip .search-faq-chevron {
+  transform: rotate(180deg);
+}
+
+.search-chip-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 3;
+  display: grid;
+  gap: 2px;
+  min-width: 240px;
+  margin: 0;
+  padding: 8px;
+  background: #fff;
+  border: 1px solid #dadce0;
+  border-radius: var(--radius-4);
+  box-shadow: var(--shadow-2);
+}
+
+.search-chip-panel label {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 8px;
+  border-radius: var(--radius-2);
+  font-size: 15px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.search-chip-panel label:hover {
+  background: #f7f8f9;
+}
+
+.search-chip-panel input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: #0b663d;
+}
+
+.search-chip-clear {
+  min-height: 36px;
+  padding: 0 8px;
+  color: #0b663d;
+  background: transparent;
+  border: 0;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.search-empty {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  margin-top: 28px;
+  padding: 24px;
+  border: 1px dashed #dadce0;
+  border-radius: var(--radius-4);
+}
+
+.search-empty p {
+  margin: 0;
+  color: #353535;
+  font-size: 15px;
+  line-height: 22px;
+}
+
+/* Top picks */
+
+/* Full-bleed band carrying the hero gradient, flipped top to bottom. */
+.search-picks {
+  margin: var(--space-13) -16px 0;
+  padding: var(--space-13) var(--space-9) var(--space-15);
+  background:
+    radial-gradient(ellipse at 50% 44%, rgba(200, 215, 95, 0.18), transparent 46%),
+    radial-gradient(ellipse at 82% 54%, rgba(195, 210, 85, 0.16), transparent 40%),
+    linear-gradient(
+      180deg,
+      #fff 0%,
+      #fcfdfe 20%,
+      #f7fafc 36%,
+      #edf3f7 52%,
+      #e5ecf7 68%,
+      #dbe9f9 82%,
+      #ecf2fb 92%,
+      #fff 100%
+    );
+}
+
+.search[data-layout="desktop"] .search-picks {
+  margin: var(--space-15) -136px 0;
+  padding: var(--space-15) 136px var(--space-16);
+}
+
+.search-picks h3 {
+  margin: 0;
+  font-family: var(--font-heading-stack);
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 28px;
+}
+
+.search-picks-grid {
+  display: grid;
+  gap: var(--space-9);
+  margin: var(--space-13) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.search[data-layout="desktop"] .search-picks-grid {
+  grid-template-columns: repeat(3, 1fr);
+  align-items: stretch;
+}
+
+.search-pick {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
+  padding: var(--space-13);
+  background: #fff;
+  border: 1px solid #e3e9ee;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(33, 35, 38, 0.06);
+}
+
+.search[data-layout] .search-pick .search-portrait {
+  width: 80px;
+  height: 80px;
+}
+
+.search-pick-identity {
+  display: grid;
+  gap: 2px;
+}
+
+.search-pick-identity h4 {
+  margin: 0;
+  font-family: var(--font-heading-stack);
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 28px;
+  letter-spacing: -0.4px;
+}
+
+.search-pick-identity p {
+  margin: 0;
+  color: #717171;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.search-pick-why {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 12px 14px;
+  color: var(--hlx-color-green-950);
+  background: var(--hlx-color-background-selected);
+  border-radius: var(--radius-4);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.search-pick-why strong {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.search-pick .search-bio {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+
+.search-pick .search-portrait-wrap,
+.search-pick .search-meta {
+  flex: none;
+}
+
+.search-pick .search-meta span {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* The foot sits on the card floor, so the three cards line up. */
+.search-pick-foot {
+  display: grid;
+  gap: var(--space-7);
+  margin-top: auto;
+  padding-top: var(--space-9);
+  border-top: 1px solid #dadce0;
+}
+
+.search-pick-foot p {
+  margin: 0;
+  color: #717171;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.search-pick button {
+  justify-self: start;
+}
+
 .search-grid {
   display: grid;
   gap: 16px;
-  margin: 28px 0 0;
+  margin: var(--space-7) 0 0;
   padding: 0;
   list-style: none;
 }
@@ -724,22 +1164,6 @@ button {
 .search[data-layout="desktop"] .search-portrait {
   width: 120px;
   height: 120px;
-}
-
-.search-rank {
-  position: absolute;
-  top: -4px;
-  left: -4px;
-  z-index: 1;
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  color: #fff;
-  background: #0b663d;
-  border-radius: 50%;
-  font-size: 13px;
-  font-weight: 700;
 }
 
 .search-identity p:first-of-type {
@@ -827,7 +1251,8 @@ button {
   font-weight: 500;
 }
 
-.search-card button {
+.search-card button,
+.search-pick button {
   box-sizing: border-box;
   min-height: 36px;
   padding: 6px 16px;
@@ -838,34 +1263,6 @@ button {
   font-size: 16px;
   font-weight: 500;
   line-height: 22px;
-}
-
-.search-reasons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.search-reasons li {
-  padding: 4px 10px;
-  color: #052e1c;
-  background: #d0eee0;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 650;
-}
-
-.search-quiet {
-  min-height: 40px;
-  margin-top: 20px;
-  padding: 0 16px;
-  color: #0b663d;
-  background: #fff;
-  border: 1px solid #dadce0;
-  border-radius: 4px;
 }
 
 .search-pager {

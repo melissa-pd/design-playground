@@ -6,7 +6,7 @@ This initiative is a speculative prototype of Headway's couples search page, bui
 
 - Show the couples search page from the Figma reference: hero, cost estimate, provider cards, local proof, FAQ, and footer.
 - Compare that page at mobile and desktop widths, including both at once.
-- Explore three variants of the same page: baseline directory, match reasons on the card, and a short ranked list.
+- Explore three cumulative variants of the same page: a sort order, a filter bar, and a ranked top 3.
 - Provider cards use the names, photos, and profile copy from the Figma frame. Do not invent stand-in therapists.
 
 ## Source boundaries

@@ -152,6 +152,19 @@ export function calloutsForPicks(picks: Provider[], insurance: string): string[]
       return `${subject}, ${tone.toLowerCase()} in style, who treats ${goal.toLowerCase()} and ${plan}.`;
     }
 
+    // The others name what they match, so the callouts rank by how much they cover.
+    const clauses: string[] = [];
+    if (goal) clauses.push(`treats ${goal.toLowerCase()}`);
+    if (onboarding.wantsIntroCall && provider.freeConsult) {
+      clauses.push("offers a free intro call");
+      used.add("intro-call");
+    }
+    if (clauses.length > 0) {
+      used.add("goal");
+      const tail = clauses.length === 1 ? `${clauses[0]}, your top goal` : clauses.join(" and ");
+      return `${subject} who ${tail}.`;
+    }
+
     for (const angle of angles) {
       if (used.has(angle.id)) continue;
       const tail = angle.tail(provider, insurance, soonestId ?? "");

@@ -1092,10 +1092,15 @@ button {
 /* The foot sits on the card floor, so the three cards line up. */
 .search-pick-foot {
   display: grid;
-  gap: var(--space-7);
+  gap: 0;
   margin-top: auto;
   padding-top: var(--space-9);
   border-top: 1px solid #dadce0;
+}
+
+/* Only the button needs the gap; the two lines stack tight, as on the cards below. */
+.search-pick-foot button {
+  margin-top: var(--space-7);
 }
 
 .search-pick-foot p {

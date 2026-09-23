@@ -1068,8 +1068,6 @@ button {
 }
 
 .search-pick-why {
-  display: grid;
-  gap: 2px;
   margin: 0;
   padding: 12px 14px;
   color: var(--hlx-color-green-950);
@@ -1077,13 +1075,6 @@ button {
   border-radius: var(--radius-4);
   font-size: 14px;
   line-height: 20px;
-}
-
-.search-pick-why strong {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
 }
 
 .search-pick .search-bio {

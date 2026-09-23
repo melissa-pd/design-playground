@@ -702,7 +702,7 @@ function TopPicks({
         From your answers: {onboarding.goals.join(" and ").toLowerCase()} ·{" "}
         {onboarding.tone.join(" or ").toLowerCase()} tone · {onboarding.sessions.toLowerCase()} ·{" "}
         {onboarding.wantsIntroCall ? "free intro call" : "ready to book"} ·{" "}
-        {onboarding.therapistGender.toLowerCase()} on gender
+        {onboarding.therapistGender.toLowerCase()} therapist
       </p>
       <ol className="search-picks-grid">
         {picks.map((provider, index) => (
@@ -724,10 +724,7 @@ function PickCard({ provider, why }: { provider: Provider; why: string }) {
         <p>Therapist</p>
         <p>Virtual • Washington</p>
       </div>
-      <p className="search-pick-why">
-        <strong>Why this fits</strong>
-        {why}
-      </p>
+      <p className="search-pick-why">{why}</p>
       <p className="search-bio">{provider.bio}</p>
       <ul className="search-meta">
         <li>

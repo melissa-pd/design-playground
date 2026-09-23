@@ -85,7 +85,9 @@ const angles: {
     build: (provider) => {
       const match = provider.style.find((value) => onboarding.tone.includes(value));
       if (!match) return null;
-      return `${match} was one of your must-haves, and it is one of only three words ${firstName(provider)} uses for the work.`;
+      const wanted = provider.gender === onboarding.therapistGender;
+      const who = wanted ? `a ${onboarding.therapistGender.toLowerCase()} with` : "someone with";
+      return `You asked for ${who} a ${match.toLowerCase()} style, and couples work sits at the center of what ${firstName(provider)} does.`;
     },
   },
   {
@@ -93,7 +95,7 @@ const angles: {
     build: (provider) => {
       const match = provider.specialties.find((value) => onboarding.goals.includes(value));
       if (!match) return null;
-      return `${match} was top of the list you gave us, and ${firstName(provider)} treats it alongside couples work.`;
+      return `${match} was top of the list you gave us, and it is one of the five specialties ${firstName(provider)} lists.`;
     },
   },
   {
